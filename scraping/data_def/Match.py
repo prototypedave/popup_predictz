@@ -16,7 +16,7 @@ class MatchInfo:
     referee: str                            # Referee name
     venue: str                              # Venue name
     league: str                             # League name
-    game_round: str                              # Game round
+    game_round: str                         # Game round
     capacity: Optional[int] = None          # Venue capacity
     weather: Optional[str] = None           # Weather conditions
     home_score: Optional[int] = None        # Home team score
