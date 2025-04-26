@@ -1,5 +1,7 @@
 import pytest
 from scraping.utils.data_rep import parse_score, parse_list_details, parse_date_dd_mm_yyyy, split_string
+from scraping.utils.util import append_to_list
+from unittest.mock import MagicMock
 
 @pytest.mark.parametrize("input_str,expected", [
     ("1\n-\n2", (1, 2)),
@@ -53,3 +55,24 @@ def test_parse_date_dd_mm_yyyy(input_str, expected):
 ])
 def test_split_string(input_str, expected):
     assert split_string(input_str) == expected
+
+
+@pytest.mark.parametrize("input_list, expected", [
+    ([MagicMock(inner_text=MagicMock(return_value="Live Streaming"))],
+     ["live streaming"]),  
+    ([MagicMock(inner_text=MagicMock(return_value="Venue")),
+      MagicMock(inner_text=MagicMock(return_value="Referee"))],
+     ["venue", "referee"]), 
+    ([MagicMock(inner_text=MagicMock(return_value="  Text with Spaces  "))],
+     ["text with spaces"]),
+    ([MagicMock(inner_text=MagicMock(return_value="MiXeD CaSe"))],
+     ["mixed case"]),
+    ([], []), 
+    ([MagicMock(inner_text=MagicMock(return_value="Some Text")), 123],
+     ["some text"]),  
+    ([MagicMock(inner_text=MagicMock(side_effect=Exception("Simulated")))],
+     []), 
+])
+def test_append_to_list(input_list, expected):
+    assert append_to_list(input_list) == expected
+
