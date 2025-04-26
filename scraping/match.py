@@ -27,12 +27,9 @@ def scrape_match_data_from_link(page: Page, link: str) -> MatchInfo:
         Returns:
             MatchInfo: An instance of MatchInfo containing the scraped data.
     """
-    # Navigate to the match page
     try:
         page.goto(link)
         page.wait_for_selector(".duelParticipant")
-
-        # Scrape match data
         home_team = page.locator(".duelParticipant__home .participant__participantName a").first.inner_text().strip()
         away_team = page.locator(".duelParticipant__away .participant__participantName a").first.inner_text().strip()
         home_score, away_score = parse_score(page.locator(".detailScore__wrapper").inner_text().strip())
@@ -59,7 +56,6 @@ def scrape_loadable_match_data(page: Page):
         Returns:
             MatchInfo: An instance of MatchInfo containing the scraped data.
     """
-    # Scrape loadable match data
     try:
         page.wait_for_selector(".loadable__section")
         extra_match_info = page.locator(".wclDetailSection .wcl-content_J-1BJ").all()
@@ -76,8 +72,7 @@ def scrape_loadable_match_data(page: Page):
             if 'tv channel:' in head or 'live streaming:' in head:
                 continue
             
-            return parse_list_details(head, val)
-     
+            return parse_list_details(head, val)  
             
     except PlaywrightTimeoutError:
         print("Timeout error while scraping match data.")

@@ -11,24 +11,21 @@ from playwright.sync_api import Page
 
 def scrape_events(page: Page) -> list:
     """
-    Scrape events from the provided page.
+        Scrape events from the provided page.
 
-    Args:
-        page (Page): The Playwright page object to scrape data from.
+        Args:
+            page (Page): The Playwright page object to scrape data from.
 
-    Returns:
-        list: A list of scraped events links.
+        Returns:
+            list: A list of scraped events links.
     """
     links = []
-    # Wait for the events section to load
     page.wait_for_selector(".event__match")
-
-    # Locate all event elements
     events = page.locator(".event__match").all()
 
     for event in events:
         match_link = scrape_match_link(event)
-        if match_link:
+        if match_link and match_link.startswith("http"):  
             links.append(match_link)
     return links
 
@@ -38,17 +35,19 @@ def scrape_events(page: Page) -> list:
 
 def scrape_match_link(event):
     """
-    Scrape match link from the given event.
+        Scrape match link from the given event.
 
-    Args:
-        event (Locator): The event locator to scrape the match link from.
+        Args:
+            event (Locator): The event locator to scrape the match link from.
 
-    Returns:
-        str: The scraped match link.
+        Returns:
+            str: The scraped match link.
     """
     try:
         match_link = event.locator("a").first
-        href = match_link.get_attribute("href")   
+        href = match_link.get_attribute("href")
+        if href == '':
+            return None
         return href
 
     except Exception as e:

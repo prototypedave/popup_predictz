@@ -7,7 +7,8 @@
 # ==========================================================
 # Append string to a list
 # append_to_list: (lst: list) -> list
-# interp. append_to_list takes a list of playwright locator and strips strings from it and appends to a new list
+# interp. append_to_list takes a list of playwright locator and strips 
+#       strings from it and appends to a new list
 
 def append_to_list(lst: list) -> list:
     """
