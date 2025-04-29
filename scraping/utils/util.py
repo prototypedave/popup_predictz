@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 # This file contains reusable functions for parsing and formatting data
 
 # ==========================================================
@@ -31,3 +33,26 @@ def append_to_list(lst: list) -> list:
             print(f"An error occurred: {e}")
             continue
     return new_list
+
+
+# ==========================================================
+# Get events that already played
+
+# get_events_already_played: (Date, Time) -> Bool
+# interp. takes a date and time and returns True if the event has already played
+#      False otherwise
+def is_event_already_played(date: str, time: str) -> bool:
+    """
+        Args:
+            date (str): The date of the event in 'dd-mm-yyyy' format.
+            time (str): The time of the event in 'HH:MM' format.
+        Returns:
+            bool: True if the event has already played, False otherwise.
+    """
+    try:
+        event_datetime_str = f"{date} {time}"
+        event_datetime = datetime.strptime(event_datetime_str, '%Y-%m-%d %H:%M')
+        check_time = datetime.now() - timedelta(hours=2)
+        return event_datetime <= check_time
+    except ValueError:
+        return False
