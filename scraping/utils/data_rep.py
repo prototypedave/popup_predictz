@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 
 # This file is part of the Football Data API project.
@@ -80,3 +81,25 @@ def split_string(input_str: str) -> tuple:
         return parts[0], parts[1] + " - " + parts[2]
     else:
         return parts[0], None
+
+
+# ==============================================================
+# Format minute string into an integer
+# parse_minute: (str) -> int
+# interp. parse_minute takes a string representation of a minute and returns an integer
+
+def parse_minute(min: str) -> int:
+    try:
+        return int(min.replace("'", ""))
+    except ValueError:
+        return None
+
+
+# ==============================================================
+# Format bracket string into a string
+# parse_bracket: (str) -> str
+# interp. parse_bracket removes brackets from a string and returns the cleaned string
+
+def parse_bracket(text: str) -> str:
+    match = re.match(r"\((.*?)\)", text.strip())
+    return match.group(1) if match else text
