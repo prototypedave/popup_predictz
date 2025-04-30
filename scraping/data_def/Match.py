@@ -24,97 +24,103 @@ class MatchInfo:
 
 
 # ========================================================
-# PlayerName
+# PlayerData
 # ========================================================
 
-# PlayerName  -> Data Class
-# interp. PlayerName represents a player's name
+# PlayerData  -> Data Class
+# interp. represents player data
+#     name -> str
+#     position -> str
+#     team -> str
+#     nationality -> str
+#     date_of_birth -> str
 
 @dataclass
-class PlayerName:
-    full_name: str                          # Player's full name
-    position: Optional[str] = None          # Player's position
+class PlayerData:
+    name: str
+    position: str
+    team: str
+    nationality: str
+    date_of_birth: str
 
 
-# ========================================================
-# GoalInfoData
-# ========================================================
+# =========================================================
+# GoalData
+# =========================================================
 
-# GoalInfoData  -> Data Class
-# interp. GoalInfoData represents information about a goal in a match
-#     Scorer -> PlayerName
-#     Assist -> PlayerName
-#     Penalty -> bool
+# GoalData  -> Data Class
+# interp. represents goal scored data
+#     scorer -> PlayerData
+#     assist -> PlayerData
+#     penalty -> bool
 
 @dataclass
-class GoalInfoData:
-    scorer: PlayerName                      # Player who scored the goal
-    assist: Optional[PlayerName] = None     # Player who assisted the goal
-    penalty: bool = False                   # Whether the goal was a penalty
+class GoalData:
+    scorer: PlayerData
+    assist: Optional[PlayerData] = None
+    penalty: bool = False
 
 
-# ========================================================
+# =========================================================
+# CardData
+# =========================================================
+
+# CardData  -> Data Class
+# interp. represents card awarded data
+#     player -> PlayerData
+#     card_type -> str
+
+@dataclass
+class CardData:
+    player: PlayerData
+    card_type: str
+
+
+# =========================================================
 # SubstitutionData
-# ========================================================
+# =========================================================
 
 # SubstitutionData  -> Data Class
-# interp. SubstitutionData represents information about substitution made player in and player out
-#     player_in -> PlayerName
-#     player_out -> PlayerName
+# interp. represents substitution made
+#     player_out -> PlayerData
+#     player_in -> PlayerData
 
 @dataclass
 class SubstitutionData:
-    player_in: PlayerName                   # Player subbed in
-    player_out: PlayerName                  # Player subbed out
+    player_out: PlayerData
+    player_in: PlayerData
 
 
-# ========================================================
-# CardInfoData
-# ========================================================
+# =========================================================
+# IncidentData
+# =========================================================
 
-# CardInfoData  -> Data Class
-# interp. CardInfoData represents type of card given to a player
-#     yellow_card -> bool
-#     red_card -> bool
-#     player -> PlayerName
-
-@dataclass
-class CardInfoData:
-    yellow_card: bool                       # Whether a yellow card was given
-    red_card: bool                          # Whether a red card was given
-    player: PlayerName                      # Player who received the card
-
-
-# ========================================================
-# MatchIncident
-# ========================================================
-
-# MatchIncident  -> Data Class
-# interp. represents information about a match incident
+# IncidentData  -> Data Class
+# interp. represents match incident data at a given time during the match
 #     time -> int
-#     yellow_card -> PlayerName
-#     red_card -> PlayerName
-#     substitution -> SubstitutionData
-#     goal -> GoalInfoData
+#     one of:
+#         - goal -> GoalData
+#         - card -> CardData
+#         - substitution -> SubstitutionData
 
 @dataclass
-class MatchIncident:
-    time: int                               
-    card: Optional[CardInfoData] = None
+class IncidentData:
+    time: int
+    goal: Optional[GoalData] = None
+    card: Optional[CardData] = None
     substitution: Optional[SubstitutionData] = None
-    goal: Optional[GoalInfoData] = None
 
 
-# =======================================================
-# FullTimeData
-# =======================================================
+# ========================================================
+# GameIncidents
+# ========================================================
 
-# FullTimeData  -> Data Class
-# interp. represents full time match incidents
-#     home_incidents -> list
-#     away_incidents -> list
+# GameIncidents -> Data Class
+# interp. represents full time match report of incidents
+#       home -> List[IncidentData]
+#       away -> List[IncidentData]
 
 @dataclass
-class FullTimeData:
-    home_incidents: List[MatchIncident] = field(default_factory=list)
-    away_incidents: List[MatchIncident] = field(default_factory=list)
+class GameIncidents:
+    home: List[IncidentData] = field(default_factory=list)
+    away: List[IncidentData] = field(default_factory=list)
