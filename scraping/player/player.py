@@ -30,4 +30,5 @@ def scrape_player_data(page: Page, player_link: str) -> PlayerData:
         return  PlayerData(name=name, position=position,
                 nationality=country, team=parse_bracket(team), date_of_birth=parse_bracket(dob))
     except Exception as e:
+        print(f"Scraping player data error: {e}")
         return None

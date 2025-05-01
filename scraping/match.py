@@ -30,8 +30,15 @@ def scrape_match_data_from_link(page: Page, link: str):
         home_score, away_score = parse_score(page.locator(".detailScore__wrapper").inner_text().strip())
         match_time = page.locator(".duelParticipant__startTime div").inner_text().strip()
 
-        match_data = create_match_info(page, home_team, away_team, match_time, home_score, away_score)
-        return match_data
+        #match_data = create_match_info(page, home_team, away_team, match_time, home_score, away_score)
+        date, time = parse_date_dd_mm_yyyy(match_time)
+        if is_event_already_played(date, time):
+            jk = scrape_in_play_match_data(page)
+            print(jk)
+
+
+
+        
 
     except PlaywrightTimeoutError:
         print("Timeout error while scraping match data.")

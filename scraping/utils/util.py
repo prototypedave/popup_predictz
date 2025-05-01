@@ -56,3 +56,33 @@ def is_event_already_played(date: str, time: str) -> bool:
         return event_datetime <= check_time
     except ValueError:
         return False
+
+
+# ============================================================
+# Get attributes from selectors safely
+
+# safe_get_attribute: (locator, selector, attr) -> str
+# interp. takes a selector name and attribute type and returns the value for the given
+#       attribute if exception it returns None
+
+def safe_get_attribute(event, selector: str, attr: str) -> str | None:
+    try:
+        value = event.locator(selector).get_attribute(attr)
+        return value
+    except Exception as e:
+        return None
+
+
+# =============================================================
+# Gets text for a possible element
+
+# safe_get_text: (locator, selector) -> str
+# interp. takes a selector (element) and returns the text content it contains
+#       returns None if an exception
+
+def safe_get_text(event, selector: str) -> str | None:
+    try:
+        text = event.locator(selector).inner_text()
+        return text.strip() if text else None
+    except Exception as e:
+        return None
