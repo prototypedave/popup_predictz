@@ -6,25 +6,27 @@ def scrape_flashscore():
         browser = p.chromium.launch(headless=True) 
         context = browser.new_context()
         page = context.new_page()
+        page.goto("https://www.flashscore.com/match/football/OCxRmFfE/#/match-summary")
 
-        attr = {
-            "goal": "https://www.flashscore.com/player/acuna-valentino/M1JJJMB3/",
-            "assist": "https://www.flashscore.com/player/acuna-valentino/M1JJJMB3/",
-            "pen": "(penalty)"
-        }
+        page.wait_for_selector(".lf__sidesBox")
+        lf_side = page.locator(".lf__sidesBox .lf__sides .lf__side .wcl-participant_QKIld").all()
 
-        scorer = attr['assist']
+        if lf_side:
+            home, away = [], []
+            for lf in lf_side:
+                attr = lf.get_attribute('data-testid')
+                if attr:
+                    if 'left' in attr:
+                        link = lf.locator('a').get_attribute('href')
+                        reason = lf.locator('span').text_content()
+                        home.append(link)
+                        print(reason)
+                    elif 'right' in attr:
+                        link = lf.locator('a').get_attribute('href') 
+            if home or away:
+                print('TRUE')        
 
-        page.goto(scorer)
-
-        page.wait_for_selector(".player-profile-heading")
-        country = page.locator(".player-profile-heading nav li").last.text_content().lower()
-        name = page.locator(".playerHeader__nameWrapper h2").text_content().lower()
-        position = page.locator(".playerTeam strong").text_content().lower()
-        team = page.locator(".playerTeam a").text_content().lower()   # format to remove brackets
-        playerInfo = page.locator(".playerInfoItem span").all()
-        dob = playerInfo[1].text_content().lower()   # format to remove brackets and ensure its in date format
-        print(dob)
+        browser.close()
 
 
 if __name__ == "__main__":

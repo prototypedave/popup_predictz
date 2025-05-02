@@ -92,6 +92,35 @@ class SubstitutionData:
 
 
 # =========================================================
+# InjuredData
+# =========================================================
+
+# InjuredData -> Data Class
+# interp. represents a dict of players missing in a given match
+#       player: PlayerData
+#       reason: str
+
+@dataclass
+class InjuredData:
+    player: PlayerData
+    reason: str
+
+
+# =========================================================
+# MissingPlayersData
+# =========================================================
+
+# MissingPlayersData  -> Data Class
+# interp. represents a list of players (InjuredData) that will not play a given match
+#       injured: List[InjuredData]
+
+@dataclass
+class MissingPlayersData:
+    home: Optional[InjuredData] = field(default_factory=list)
+    away: Optional[InjuredData] = field(default_factory=list)
+
+
+# =========================================================
 # IncidentData
 # =========================================================
 

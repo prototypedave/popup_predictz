@@ -31,7 +31,7 @@ def get_match_incident(page: Page, event):
             return IncidentData(time=minute, goal=None, card=card, substitution=None)
 
     goal_attr = safe_get_attribute(event, ".smv__incidentIcon svg", "data-testid")
-    if "soccer" in goal_attr:  
+    if goal_attr is not None and "soccer" in goal_attr:  
         goal = get_goal(page, event)
         return IncidentData(time=minute, goal=goal, card=None, substitution=None)
 
