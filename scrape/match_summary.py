@@ -1,8 +1,9 @@
 # Functions to scrape match summary from flashscore
 from playwright.sync_api import Page
 from .utils import scrape_locator_lists, scrape_attributes, scrape_text_content
-from .func_util import split_string, parse_score
+from .func_util import split_string, parse_score, is_past_two_hours
 from datetime import datetime
+from .player import match_events
 
 # Page -> tuple
 # scrape league name, country name and game round from page and 
@@ -28,7 +29,10 @@ def match_info(page: Page) -> tuple:
 # scrape in play match data
 def in_play_match_info(page: Page):
     in_play_list = scrape_locator_lists(page, ".loadable__section .smv__verticalSections")
-    print(in_play_list)
+    if in_play_list:
+        home_events = in_play_list[0].locator(".smv__homeParticipant").all()
+        away_events = in_play_list[0].locator(".smv__awayParticipant").all()
+        match_events(page, home_events)
 
 
 # Page -> GameInfo
@@ -37,5 +41,6 @@ def in_play_match_info(page: Page):
 def get_match_summary(page: Page):
     country, league, round = game_country_and_league(page)
     home, away, home_score, away_score, time = match_info(page)
-    in_play_match_info(page)
+    if is_past_two_hours:
+        in_play_match_info(page)
         

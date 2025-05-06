@@ -26,6 +26,22 @@ class GameInfo:
     capacity: Optional[Natural] = None      # Attendance or stadium capacity
 
 
+# ================================================================
+# Player data - player details
+# ================================================================
+
+# Player is Dict
+# interp. information about a player
+
+@dataclass
+class Player:
+    name: str                               # Name of the player
+    position: str                           # Position where the player plays eg forward
+    team: str                               # Current team the player plays at
+    dob: str                                # Date of birth
+    nationality: str                        # Country of origin
+
+
 # ==============================================================
 # Goal info -  match report on goal data
 # ==============================================================
@@ -71,17 +87,4 @@ class CardInfo:
     reason: Optional[str]                   # Infringement 
 
 
-# ================================================================
-# Player data - player details
-# ================================================================
 
-# Player is Dict
-# interp. information about a player
-
-@dataclass
-class Player:
-    name: str                               # Name of the player
-    position: str                           # Position where the player plays eg forward
-    team: str                               # Current team the player plays at
-    dob: str                                # Date of birth
-    nationality: str                        # Country of origin

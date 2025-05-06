@@ -1,4 +1,5 @@
 # Helper functions
+from datetime import datetime, timedelta
 
 # Split a string into two parts based on a hyphen
 # split_string: (str) -> tuple
@@ -41,3 +42,12 @@ def parse_score(score_text: str):
 def parse_bracket(text: str) -> str:
     match = re.match(r"\((.*?)\)", text.strip())
     return match.group(1) if match else text
+
+
+# Return True or False if time is 2 hours and earlier from now
+# is_past_two_hours: (datetime) -> bool
+# produce true if its past else false
+
+def is_past_two_hours(time: datetime) -> bool:
+    check_time = datetime.now() - timedelta(hours=2)
+    return time <= check_time

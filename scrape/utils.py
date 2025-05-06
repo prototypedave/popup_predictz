@@ -9,7 +9,6 @@ def scrape_locator_lists(page: Page, cls_name: str) -> list:
         locators = page.locator(cls_name).all()
         return locators
     except Exception as e:
-        print(e)
         return []
 
 
@@ -20,7 +19,6 @@ def scrape_attributes(loc, cls_name: str, attr: str) -> str:
         attr_str = loc.locator(cls_name).first.get_attribute(attr)
         return attr_str
     except Exception as e:
-        print(e)
         return None
 
     
@@ -31,5 +29,4 @@ def scrape_text_content(loc, cls_name: str) -> str:
         text = loc.locator(cls_name).first.text_content()
         return text
     except Exception as e:
-        print(e)
         return None
