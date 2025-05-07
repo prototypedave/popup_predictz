@@ -1,6 +1,6 @@
 # Scrapper to get player's data
 from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
-from .data import Player, SubInfo, CardInfo, GoalInfo
+from .data import Player, SubInfo, CardInfo, GoalInfo, MissingPlayer
 from .constants import FLASHSCORE
 from .utils import scrape_text_content, scrape_locator_lists, scrape_attributes
 from .func_util import parse_bracket
@@ -85,6 +85,14 @@ def populate_goal_info(page: Page, loc, min) -> GoalInfo:
 
         return GoalInfo(scorer=scorer, assist=None, time=min, goal_type=None)
 
+
+# Page, Locator -> MissingPlayer
+# scrape and populate information for missing or injured player and return MissingPlayer class
+def populate_missing_player_info(page: Page, team) -> MissingPlayer:
+    href = team['href']
+    player = scrape_player_data(page, href)
+    return MissingPlayer(player=player, reason=team['reason'])
+    
 
 # Page, Locator -> Dict
 # checks whether an event is substition, card or goal and returns a dictionary

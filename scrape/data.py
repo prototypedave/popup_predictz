@@ -87,4 +87,14 @@ class CardInfo:
     reason: Optional[str]                   # Infringement 
 
 
+# ===============================================================
+# Missing Player - info on a player that will not play
+# ===============================================================
 
+# MissingPlayer is Dict
+# interp. data class representing data for absent players in a match
+
+@dataclass
+class MissingPlayer:
+    player: Player                          # Player
+    reason: Optional[str]                   # purpose of missing the match

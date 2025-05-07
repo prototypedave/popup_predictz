@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 from .utils import scrape_locator_lists, scrape_attributes, scrape_text_content
 from .func_util import split_string, parse_score, is_past_two_hours
 from datetime import datetime
-from .player import match_events
+from .player import match_events, populate_missing_player_info
 
 # Page -> tuple
 # scrape league name, country name and game round from page and 
@@ -45,7 +45,34 @@ def in_play_match_info(page: Page) -> tuple:
 #   of list for home and away players 
 def absent_players_info(page: Page) -> tuple:
     absent_locators = scrape_locator_lists(page, ".loadable__section .lf__sidesBox .lf__sides .lf__side .wcl-participant_QKIld")
-    print(absent_locators)
+    if absent_locators:
+        home, away = [], []
+        for absent in absent_locators:
+            if absent:
+                absent_attr = absent.get_attribute('data-testid')
+                if absent_attr:
+                    # Home Players
+                    if "wcl-lineupsParticipantGeneral-left" in absent_attr:
+                        href = scrape_attributes(absent, "a", "href")
+                        if href:
+                            reason = scrape_text_content(absent, "span")
+                            home.append({'href': href, 'reason': reason})
+                    elif "wcl-lineupsParticipantGeneral-right" in absent_attr:
+                        href = scrape_attributes(absent, "a", "href")
+                        if href:
+                            reason = scrape_text_content(absent, "span")
+                            away.append({'href': href, 'reason': reason})
+        home_data = []
+        for team in home:
+            missing = populate_missing_player_info(page, team)
+            home_data.append(missing)
+        
+        away_data = []
+        for team in away:
+            missing = populate_missing_player_info(page, team)
+            away_data.append(missing)
+
+        return home_data, away_data
 
 
 # Page -> GameInfo
@@ -54,7 +81,8 @@ def absent_players_info(page: Page) -> tuple:
 def get_match_summary(page: Page):
     country, league, round = game_country_and_league(page)
     home, away, home_score, away_score, time = match_info(page)
-    absent_players_info(page)
+    home_players_missing, away_players_missing = absent_players_info(page)
+    print(away_players_missing)
     if is_past_two_hours:
         in_play_match_info(page)
         
