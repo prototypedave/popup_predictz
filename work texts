@@ -1,0 +1,115 @@
+;; Name -> type
+;; interp
+
+;; Arg Name/type -> type Name
+;;
+
+;; Domain Analysis
+;;   - Sketch program scenarios
+;;   - Constants
+;;       Any known value
+;;   - Changing Info
+;;       variables that changes
+;;   - Options
+
+;; First line of the program shoulf give a short summary
+
+;; Start with the Constants
+
+;; Data definitions (changing variables)
+
+;; Functions
+
+;; white text-box
+
+
+
+Domain Analysis
+ -> Daily teams playing
+ 	- team lists (match summary, match stats, h2h data)
+ -> Each team match summary
+ 	- league, country and round
+ 	- home, away, score (if present), time and date
+ 	- match report (if present)
+ 	- match info: referee (if present), venue, capacity (if present)
+ -> Each team match stats (if applicable)
+ 	- xG (if applicable)
+ 	- ball possession
+ 	- total shots
+ 	- on target
+ 	- big chances (if applicable)
+ 	- corner kicks 
+ 	- passes
+ 	- xG on target
+ 	- off target
+ 	- blocked shots
+ 	- shots inside the box
+ 	- shots outside the box
+ 	- hit the woodwork
+ 	- touches in opposition box
+ 	- accurate through passes
+ 	- offsides
+ 	- freekicks
+ 	- long passes
+ 	- passes in final third
+ 	- crosses
+ 	- expected assists
+ 	- throw-ins
+ 	- fouls
+ 	- tackles
+ 	- duels won
+ 	- clearances
+ 	- interceptions
+ 	- errors leading to shot
+ 	- errors leading to goal
+ 	- goal keeper saves
+ 	- xGOT faced
+ 	- Goals prevented
+ 
+ -> Each tema h2h data
+ 	- Last 5 games home team
+ 	- Last 5 games away team
+ 	- Last 5 games Overall
+ 	- Last 5 games home team at home
+ 	- Last 5 games away team at away
+ 	- Last 5 games overall home team at home
+ 	
+ -> Each team odds
+ 	- 1X2 (FT, HT, 2HT)
+ 	- OVER/UNDER (FT, HT, 2HT)
+ 		- 0.5, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5
+ 	- Asian handicap (FT, HT, 2HT)
+ 		-4.5, -4, -3.5, -3,-3.5, -3, -2.5,-3, -2.5, -2,-2.5, -2, -1.5,-2, -1.5, -1,-1.5, -1, -0.5,-1, -0.5, ETC
+ 	- BTTS (FT, HT, 2HT)
+ 	- DC (FT, HT, 2HT)
+ 	- DNB (FT, HT)
+ 	- CS
+ 	- HT/FT
+ 	- ODD/EVEN (FT, HT, 2HT)
+ 	
+ 	
+ CONSTANTS:
+ 1. Flashscore
+ 	1. Match summary
+ 	2. Match stats
+ 	3. h2h data
+ 	
+CHANGING INFO:
+1. Match summary:
+	- league, country, round, home, away, score, time, date
+	- Goal (scorer, assist, goal type, time)
+	- Sub (in, out, time, reason)
+	- Card (type, time, name, reason)
+	- Game info (referee, capacity, venue)
+	
+2. Match stats (all of match stats data)
+3. Team odds (all data)
+4. Team H2H
+
+
+Options:
+	get list of same class name
+	get text content
+	get href attributes
+	get class name text
+ 

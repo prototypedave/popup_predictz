@@ -1,7 +1,7 @@
 # All constants for scraping
 
 # Url
-FLASHSCORE = 'https://www.flashscore.com/'
+FLASHSCORE = "https://www.flashscore.com"
 
 # Match summary
 SUMMARY = 'match-summary/match-summary'

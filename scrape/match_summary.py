@@ -25,14 +25,27 @@ def match_info(page: Page) -> tuple:
     return home_team, away_team, home_score, away_score, time
 
 
-# Page -> 
-# scrape in play match data
-def in_play_match_info(page: Page):
+# Page -> tuple
+# scrape match report of key events goal, sub, card and return a tuple of list
+#   for home and away events
+def in_play_match_info(page: Page) -> tuple:
     in_play_list = scrape_locator_lists(page, ".loadable__section .smv__verticalSections")
     if in_play_list:
-        home_events = in_play_list[0].locator(".smv__homeParticipant").all()
-        away_events = in_play_list[0].locator(".smv__awayParticipant").all()
-        match_events(page, home_events)
+        home_locs = in_play_list[0].locator(".smv__homeParticipant").all()
+        away_locs = in_play_list[0].locator(".smv__awayParticipant").all()
+        
+        home_events = match_events(page, home_locs)
+        away_events = match_events(page, home_locs)
+
+        return home_events, away_events
+
+
+# Page -> tuple
+# scrape missing or injured players that will/ did not play a given match and return a tuple
+#   of list for home and away players 
+def absent_players_info(page: Page) -> tuple:
+    absent_locators = scrape_locator_lists(page, ".loadable__section .lf__sidesBox .lf__sides .lf__side .wcl-participant_QKIld")
+    print(absent_locators)
 
 
 # Page -> GameInfo
@@ -41,6 +54,7 @@ def in_play_match_info(page: Page):
 def get_match_summary(page: Page):
     country, league, round = game_country_and_league(page)
     home, away, home_score, away_score, time = match_info(page)
+    absent_players_info(page)
     if is_past_two_hours:
         in_play_match_info(page)
         

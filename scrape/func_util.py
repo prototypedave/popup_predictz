@@ -1,5 +1,6 @@
 # Helper functions
 from datetime import datetime, timedelta
+import re
 
 # Split a string into two parts based on a hyphen
 # split_string: (str) -> tuple
