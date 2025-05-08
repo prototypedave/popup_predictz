@@ -1,7 +1,10 @@
 # Class to scrape flashscore data
-from playwright.sync_api import sync_playwright
+import asyncio
+from playwright.async_api import async_playwright, Page
 from .utils import scrape_locator_lists, scrape_attributes
 from .match_summary import get_match_summary
+from .constants import STATS_FULL_TIME
+from .func_util import is_past_two_hours
 import time
 
 # Flashscore -> Matches
@@ -10,57 +13,84 @@ import time
 class FlashScoreScraper:
 
     # Initialize the Scraper
-    def __init__(self):
-        self.browser = sync_playwright().start().chromium.launch(headless=True)
-        self.context = self.browser.new_context()
-        self.page = self.context.new_page()
+    def __init__(self, max_concurrent=10):
+        self.browser = None
+        self.context = None
+        self.semaphore = asyncio.Semaphore(max_concurrent)
+
+    async def start(self):
+        self.playwright = await async_playwright().start()
+        self.browser = await self.playwright.chromium.launch(headless=True)
+        self.context = await self.browser.new_context()
+
+    async def close(self):
+        await self.context.close()
+        await self.browser.close()
+        await self.playwright.stop()
 
     # URL -> list
     # scrape and return list of matche urls
-    def scrape_match_links(self, url):
-        self.page.goto(url)
-        events = scrape_locator_lists(self.page, ".event__match")
+    async def scrape_match_links(self, url: str) -> list[str]:
+        page = await self.context.new_page()
+        await page.goto(url)
+        await page.wait_for_selector(".event__match")
+        events = await page.locator(".event__match").all()
+        tasks = [scrape_attributes(event, "a", "href") for event in events]
+        raw_links = await asyncio.gather(*tasks)
+
+        links = [href for href in raw_links if href]
         
-        links = []
-        for event in events:
-            href = scrape_attributes(event, "a", "href")
-            links.append(href)
-
+        await page.close()
         return links
-
-    # URL -> Summary
-    # scrape and return match info summary
-    def scrape_match_summary(self, url):
-        links = self.scrape_match_links(url)
-        for link in links:
-            if link is not None:
-                self.page.goto(link)
-                self.page.wait_for_selector(".duelParticipant")
-                print(get_match_summary(self.page))
-
-
-    # URL -> Stats
-    # scrape and return match stats
+    
+    # URL -> dict
     # !!!
+    async def scrape_match_details(self, url:str):
+        async with self.semaphore:
+            summary_page = await self.context.new_page()
+            #stats_page = await self.context.new_page()
 
-    # URK -> h2h
-    # scrape and return h2h data
-    # !!!
+            try: 
+                await summary_page.goto(url)
+                await summary_page.wait_for_selector(".duelParticipant")
 
-    def scrape_match(self, url):
-        self.page.goto(url)
-        self.page.wait_for_selector(".event__match")
-        print("Test run")
+                summary_tasks = get_match_summary(summary_page)
+                summary = await asyncio.gather(summary_tasks)
+                
+                return {}
 
-    def close(self):
-        self.browser.close()
+            except Exception as e:
+                print(e)
+                return {}
+
+            finally:
+                await summary_page.close()
+
+    async def run(self, home_url: str):
+        await self.start()
+        links = await self.scrape_match_links(home_url)
+        print(f"Found {len(links)} matches")  
+
+        tasks = [self.scrape_match_details(link) for link in links]  
+        results = await asyncio.gather(*tasks)
+
+        await self.close()
+        return results
 
 
-flash = FlashScoreScraper()
+if __name__ == "__main__":
+    async def main():
+        scraper = FlashScoreScraper()
+        start = time.time()
+        results = await scraper.run("https://www.flashscore.com/")
+        for res in results:
+            print(res)
+        end = time.time()
+        print(f"Time taken: {end - start:.2f} seconds")
 
-start = time.time()
-flash.scrape_match_summary("https://www.flashscore.com/")
-end = time.time()
 
-print(f"Time taken: {end - start:.2f} seconds")
+    asyncio.run(main())
+
+
+
 
