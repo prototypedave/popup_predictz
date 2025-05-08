@@ -33,6 +33,17 @@ def scrape_player_data(page: Page, player_link: str) -> Player:
         return None
 
 
+# Page, Locator -> MissingPlayer
+# scrape and populate information for missing or injured player and return MissingPlayer class
+def populate_missing_player_info(page: Page, team) -> MissingPlayer:
+    data = []
+    for tm in team:
+        href = tm['href']
+        player = scrape_player_data(page, href)
+        data.append(MissingPlayer(player=player, reason=tm['reason']))
+    return data
+
+
 # Page, Locator, min -> SubInfo
 # scrapes and represents relevant substitution information to SubInfo
 def populate_sub_info(page: Page, loc, min) -> SubInfo:
@@ -75,24 +86,16 @@ def populate_goal_info(page: Page, loc, min) -> GoalInfo:
     scorer = scrape_player_data(page, scorer_href)
     if scorer:
         assist_href = scrape_attributes(loc, ".smv__assist a", "href")
-        if assist:
+        if assist_href:
             assist = scrape_player_data(page, assist_href)
             return GoalInfo(scorer=scorer, assist=assist, time=min, goal_type=None)
         
-        goal_type = scrape_attributes(loc, ".smv__subIncident")
+        goal_type = scrape_text_content(loc, ".smv__subIncident")
         if goal_type:
             return GoalInfo(scorer=scorer, assist=None, time=min, goal_type=goal_type)
 
         return GoalInfo(scorer=scorer, assist=None, time=min, goal_type=None)
 
-
-# Page, Locator -> MissingPlayer
-# scrape and populate information for missing or injured player and return MissingPlayer class
-def populate_missing_player_info(page: Page, team) -> MissingPlayer:
-    href = team['href']
-    player = scrape_player_data(page, href)
-    return MissingPlayer(player=player, reason=team['reason'])
-    
 
 # Page, Locator -> Dict
 # checks whether an event is substition, card or goal and returns a dictionary

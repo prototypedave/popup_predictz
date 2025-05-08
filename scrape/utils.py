@@ -30,3 +30,24 @@ def scrape_text_content(loc, cls_name: str) -> str:
         return text
     except Exception as e:
         return None
+    
+
+# Locator -> str
+# helper function to strip text content from a given locator returns None if error
+def text_content_helper(loc) -> str:
+    try:
+        text = loc.inner_text().strip().lower()
+        return text
+    except Exception as e:
+        return None
+    
+
+# List -> List
+# strip text content for the locators in the given list and return a new list containing
+#   the text content
+def scrape_text_to_list(items: list) -> list:
+    tmp = []
+    for item in items:
+        tmp.append(text_content_helper(item))
+    
+    return tmp

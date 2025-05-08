@@ -36,7 +36,7 @@ class FlashScoreScraper:
             if link is not None:
                 self.page.goto(link)
                 self.page.wait_for_selector(".duelParticipant")
-                get_match_summary(self.page)
+                print(get_match_summary(self.page))
 
 
     # URL -> Stats

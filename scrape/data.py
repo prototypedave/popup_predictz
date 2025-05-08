@@ -1,30 +1,8 @@
 from typing import NewType, Optional
 from datetime import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 Natural = NewType('Natural', int)
-
-# ==============================================================
-# Game info - match summary
-# ==============================================================
-
-# GameInfo is Dict
-# interp. a data class representing game information
-
-@dataclass
-class GameInfo:
-    league: str                             # League name
-    country: str                            # Country name
-    round: str                              # Competition round
-    home: str                               # Home team name
-    away: str                               # Away team name
-    date: datetime                          # Date and time of the match
-    home_score: Optional[Natural] = None    # Home team score
-    away_score: Optional[Natural] = None    # Away team score
-    referee: Optional[str] = None           # Referee name
-    venue: Optional[str] = None             # Match venue
-    capacity: Optional[Natural] = None      # Attendance or stadium capacity
-
 
 # ================================================================
 # Player data - player details
@@ -98,3 +76,27 @@ class CardInfo:
 class MissingPlayer:
     player: Player                          # Player
     reason: Optional[str]                   # purpose of missing the match
+
+
+# =============================================================
+# Match Summary - all general information for a given match
+# =============================================================
+
+# MatchSummary is Dict
+# interp. data class to represent match summary data
+
+@dataclass
+class MatchSummary:
+    competition: str                                                            # Country or competition of the match
+    league: str                                                                 # Tier of the competition
+    round: str                                                                  # The level the competition is in
+    home: str                                                                   # Home team
+    away: str                                                                   # Away team
+    home_score: str                                                             # Home team score
+    away_score: str                                                             # Away team score
+    date: datetime                                                              # Time and date the match played
+    absent_home_players: list[MissingPlayer] = field(default_factory=list)      # Home team missing players
+    absent_away_players: list[MissingPlayer] = field(default_factory=list)      # Away team missing players
+    referee: Optional[str] = None                                               # Referee name
+    venue: Optional[str] = None                                                 # Match venue
+    capacity: Optional[Natural] = None                                          # Attendance or stadium capacity 
