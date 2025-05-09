@@ -13,7 +13,7 @@ import time
 class FlashScoreScraper:
 
     # Initialize the Scraper
-    def __init__(self, max_concurrent=10):
+    def __init__(self, max_concurrent=20):
         self.browser = None
         self.context = None
         self.semaphore = asyncio.Semaphore(max_concurrent)
@@ -43,12 +43,13 @@ class FlashScoreScraper:
         await page.close()
         return links
     
+    
     # URL -> dict
     # !!!
     async def scrape_match_details(self, url:str):
         async with self.semaphore:
             summary_page = await self.context.new_page()
-            #stats_page = await self.context.new_page()
+            extra_page = await self.context.new_page()
 
             try: 
                 await summary_page.goto(url)
@@ -57,10 +58,9 @@ class FlashScoreScraper:
                 summary_tasks = get_match_summary(summary_page)
                 summary = await asyncio.gather(summary_tasks)
                 
-                return {}
+                return {'summsty': summary}
 
             except Exception as e:
-                print(e)
                 return {}
 
             finally:
@@ -71,7 +71,7 @@ class FlashScoreScraper:
         links = await self.scrape_match_links(home_url)
         print(f"Found {len(links)} matches")  
 
-        tasks = [self.scrape_match_details(link) for link in links]  
+        tasks = [self.scrape_match_details(link) for link in links[:10]]  
         results = await asyncio.gather(*tasks)
 
         await self.close()

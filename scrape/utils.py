@@ -31,10 +31,12 @@ async def scrape_text_content(loc, cls_name: str) -> str:
 
 # Locator -> str
 # helper function to strip text content from a given locator returns None if error
-async def text_content_helper(loc) -> str:
+async def text_content_helper(loc) -> str | None:
     try:
-        return await loc.inner_text().strip().lower()
-    except Exception as e:
+        if loc:
+            text = await loc.inner_text()
+            return text.strip().lower() if text else None
+    except Exception:
         return None
     
 

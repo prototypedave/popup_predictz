@@ -6,25 +6,15 @@ def scrape_flashscore():
         browser = p.chromium.launch(headless=True) 
         context = browser.new_context()
         page = context.new_page()
-        page.goto("https://www.flashscore.com/match/football/OCxRmFfE/#/match-summary")
+        page.goto("https://www.flashscore.co.ke/match/football/KOJsLbH7/#/match-summary/match-summary")
 
-        page.wait_for_selector(".lf__sidesBox")
-        lf_side = page.locator(".lf__sidesBox .lf__sides .lf__side .wcl-participant_QKIld").all()
+        page.wait_for_selector(".loadable__section .wclDetailSection .wcl-content_J-1BJ")
+        print("SADR")
+        #lf_side = page.locator(".container__livetable .container__detailInner .section").all()
 
-        if lf_side:
-            home, away = [], []
-            for lf in lf_side:
-                attr = lf.get_attribute('data-testid')
-                if attr:
-                    if 'left' in attr:
-                        link = lf.locator('a').get_attribute('href')
-                        reason = lf.locator('span').text_content()
-                        home.append(link)
-                        print(reason)
-                    elif 'right' in attr:
-                        link = lf.locator('a').get_attribute('href') 
-            if home or away:
-                print('TRUE')        
+        #for lf in lf_side:
+        #    header = lf.locator(".sectionHeader").text_content()
+              
 
         browser.close()
 

@@ -72,10 +72,10 @@ async def absent_players_info(page: Page) -> tuple:
                             reason = await scrape_text_content(absent, "span")
                             away.append({'href': href, 'reason': reason})
     
-    home_data = await populate_missing_player_info(page, home)
-    away_data = await populate_missing_player_info(page, away)
+        home_data = await populate_missing_player_info(page, home)
+        away_data = await populate_missing_player_info(page, away)
 
-    return home_data, away_data
+        return home_data, away_data
 
     # Tests each step in this function as its critical for failure
 
@@ -85,6 +85,7 @@ async def absent_players_info(page: Page) -> tuple:
 #   page
 async def scrape_additional_match_info(page: Page) -> dict:
     extra_locators = await scrape_locator_lists(page, ".loadable__section .wclDetailSection .wcl-content_J-1BJ")
+
     for extra in extra_locators:
         head = await extra.locator(".wcl-overline_rOFfd").all()
         value = await extra.locator(".wcl-simpleText_Asp-0").all()
@@ -138,12 +139,11 @@ async def in_play_match_info(page: Page) -> tuple:
 # Page -> dict
 # scrape and organizes match information for easier retrieval of different data
 async def get_match_summary(page: Page) -> dict:
+    additional_info = await scrape_additional_match_info(page)
     country, league, round = await game_country_and_league(page)
     home, away, home_score, away_score, time = await match_info(page)
     home_players_missing, away_players_missing = await absent_players_info(page)
-    additional_info = await scrape_additional_match_info(page)
-
-    print(additional_info)
+    
 
     referee, venue, capacity = None, None, None
     if additional_info:

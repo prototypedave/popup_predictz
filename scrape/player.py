@@ -2,7 +2,7 @@
 from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
 from .data import Player, SubInfo, CardInfo, GoalInfo, MissingPlayer
 from .constants import FLASHSCORE
-from .utils import scrape_text_content, scrape_locator_lists, scrape_attributes
+from .utils import scrape_text_content, scrape_attributes
 from .func_util import parse_bracket
 from typing import List
 
@@ -41,7 +41,6 @@ async def scrape_player_data(page: Page, player_link: str) -> Player | None:
         )
 
     except Exception as e:
-        print(f"[ERROR] scrape_player_data failed: {e}")
         return None
 
 
