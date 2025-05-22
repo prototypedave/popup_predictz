@@ -4,7 +4,8 @@ from playwright.async_api import async_playwright, Page
 from .utils import scrape_locator_lists, scrape_attributes
 from .match_summary import get_match_summary
 from .constants import STATS_FULL_TIME
-from .func_util import is_past_two_hours
+from .func_util import is_valid_url, assemble_url
+from .match_stats import get_match_stats
 import time
 
 # Flashscore -> Matches
@@ -13,7 +14,7 @@ import time
 class FlashScoreScraper:
 
     # Initialize the Scraper
-    def __init__(self, max_concurrent=20):
+    def __init__(self, max_concurrent=10):
         self.browser = None
         self.context = None
         self.semaphore = asyncio.Semaphore(max_concurrent)
@@ -29,7 +30,7 @@ class FlashScoreScraper:
         await self.playwright.stop()
 
     # URL -> list
-    # scrape and return list of matche urls
+    # scrape and return list of matches urls
     async def scrape_match_links(self, url: str) -> list[str]:
         page = await self.context.new_page()
         await page.goto(url)
@@ -49,29 +50,39 @@ class FlashScoreScraper:
     async def scrape_match_details(self, url:str):
         async with self.semaphore:
             summary_page = await self.context.new_page()
-            extra_page = await self.context.new_page()
+            stats_page = await self.context.new_page()
 
             try: 
                 await summary_page.goto(url)
                 await summary_page.wait_for_selector(".duelParticipant")
 
+                if is_valid_url(summary_page.url, "/match-summary/match-summary"):
+                    stats_url = assemble_url(summary_page.url, "/match-summary", STATS_FULL_TIME)
+                    await stats_page.goto(stats_url)
+                    await stats_page.wait_for_selector(".container__livetable .container__detailInner .section")
+                    
+                    stats_tasks = await get_match_stats(stats_page)
+                    stats = await asyncio.gather(stats_tasks)
+                    print(stats)
+
                 summary_tasks = get_match_summary(summary_page)
                 summary = await asyncio.gather(summary_tasks)
                 
-                return {'summsty': summary}
+                return {'summary': summary, 'stats': stats}
 
             except Exception as e:
                 return {}
 
             finally:
                 await summary_page.close()
+                await stats_page.close()
 
     async def run(self, home_url: str):
         await self.start()
         links = await self.scrape_match_links(home_url)
         print(f"Found {len(links)} matches")  
 
-        tasks = [self.scrape_match_details(link) for link in links[:10]]  
+        tasks = [self.scrape_match_details(link) for link in links]  
         results = await asyncio.gather(*tasks)
 
         await self.close()

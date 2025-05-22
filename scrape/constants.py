@@ -7,7 +7,7 @@ FLASHSCORE = "https://www.flashscore.com"
 SUMMARY = 'match-summary/match-summary'
 
 # stats
-STATS_FULL_TIME = '/match-statistics/0'
+STATS_FULL_TIME = 'match-statistics/0'
 STATS_FIRST_HALF = '/match-statistics/1'
 STATS_SECOND_HALF = '/match-statistics/2'
 LINEUP = 'match-summary/lineups'

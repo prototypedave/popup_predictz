@@ -3,10 +3,12 @@
 import asyncio
 from playwright.sync_api import Page
 from .utils import scrape_locator_lists, scrape_attributes, scrape_text_content, scrape_text_to_list
-from .func_util import split_string, parse_score, is_past_two_hours
+from .func_util import split_string, parse_score, is_past_two_hours, is_valid_url, assemble_url
 from datetime import datetime
 from .player import match_events, populate_missing_player_info
 from .data import MatchSummary
+from .match_stats import get_match_stats
+from .constants import STATS_FULL_TIME
 
 
 # Page -> tuple
@@ -143,7 +145,6 @@ async def get_match_summary(page: Page) -> dict:
     country, league, round = await game_country_and_league(page)
     home, away, home_score, away_score, time = await match_info(page)
     home_players_missing, away_players_missing = await absent_players_info(page)
-    
 
     referee, venue, capacity = None, None, None
     if additional_info:
