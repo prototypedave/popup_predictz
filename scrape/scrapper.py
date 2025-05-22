@@ -61,7 +61,7 @@ class FlashScoreScraper:
                     await stats_page.goto(stats_url)
                     await stats_page.wait_for_selector(".container__livetable .container__detailInner .section")
                     
-                    stats_tasks = await get_match_stats(stats_page)
+                    stats_tasks = get_match_stats(stats_page)
                     stats = await asyncio.gather(stats_tasks)
                     print(stats)
 
