@@ -40,3 +40,46 @@ ODDS_ODD_EVEN_SECOND_HALF = 'odds-comparison/odd-even/2nd-half'
 H2H_OVERALL = 'h2h/overall'
 H2H_HOME = '/h2h/home'
 H2H_AWAY = 'h2h/away'
+
+# stats variables
+STAT_MAP = {
+            "expected goals": "expected_goals",
+            "possession": "possession",
+            "total shots": "total_shots",
+            "shots on target": "shots_on_target",
+            "big chances": "big_chances",
+            "corner kicks": "corner_kicks",
+            "yellow cards": "yellow_cards",
+            "red cards": "red_cards",
+            "penalty": "penalties",
+            "xg on target": "xg_on_target",
+            "shots off target": "shots_off_target",
+            "blocked shots": "blocked_shots",
+            "shots inside": "shots_inside_the_box",
+            "shots outside": "shots_outside_the_box",
+            "woodwork": "woodwork",
+            "touches in opposition": "touches_in_opposition",
+            "offsides": "offsides",
+            "free kicks": "free_kicks",
+            "expected assists": "expected_assists",
+            "throw ins": "throw_ins",
+            "fouls": "fouls",
+            "tackles": "tackles",
+            "duels won": "duels_won",
+            "clearances": "clearances",
+            "interceptions": "interceptions",
+            "errors leading to goal": "errors_leading_to_goal",
+            "errors leading to shot": "errors_leading_to_shot",
+            "goalkeeper saves": "goalkeeper_saves",
+            "xgot faced": "xgot_faced",
+            "goals prevented": "goals_prevented"
+}
+
+# stats that are not in the same order
+EXTRA_STATS_MAP = {
+            "passes": "passes",
+            "through passes": "through_passes",
+            "long passes": "long_passes",
+            "passes in final third": "passes_in_final_third",
+            "crosses": "crosses",
+}
