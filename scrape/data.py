@@ -306,13 +306,13 @@ class DefensiveStats:
     player_name: str                                        # Name of the player
     position: str                                           # Position of the player
     total_duels: Optional[int] = None                       # Total duels attempted by the player
-    successful_aerial_duels: Optional[int] = None           # Successful aerial duels by the player
+    aerial_duels_won: Optional[int] = None                  # Successful aerial duels by the player
     total_aerial_duels: Optional[int] = None                # Total aerial duels attempted by the player
     percentage_aerial_duels_won: Optional[float] = None     # Percentage of aerial duels won by the player
-    successful_ground_duels: Optional[int] = None           # Successful ground duels by the player
+    ground_duels_won: Optional[int] = None                  # Successful ground duels by the player
     total_ground_duels: Optional[int] = None                # Total ground duels attempted by the player
     percentage_ground_duels_won: Optional[float] = None     # Percentage of ground duels won by the player
-    successful_tackles: Optional[int] = None                # Tackles made by the player
+    tackles_won: Optional[int] = None                       # Tackles made by the player
     total_tackles: Optional[int] = None                     # Total tackles attempted by the player
     percentage_tackles_won: Optional[float] = None          # Percentage of tackles won by the player
     fouls_committed: Optional[int] = None                   # Fouls committed by the player
@@ -382,6 +382,7 @@ class PassingStats:
 class ShotsStats:
     player_name: str                                        # Name of the player
     position: str                                           # Position of the player
+    total_shots: Optional[int] = None                       # Total shots attempted by the player
     goals: Optional[int] = None                             # Goals scored by the player
     xG: Optional[float] = None                              # Expected goals by the player
     xGOT: Optional[float] = None                            # Expected goals on target by the player

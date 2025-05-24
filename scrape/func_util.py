@@ -78,14 +78,42 @@ def remove_ambigious_characters(text: str) -> str:
     return text.strip()
 
 
-# Split a string into three parts based on the first occurrence of '('
+# Split a string into three parts based on occurrence of '(', '%', and '/'
 # split_string: (str) -> tuple
-# interp. split_string takes a string and splits it into three parts based on the first occurrence of '('
+# interp. split_string takes a string and splits it into three parts based on occurrence of '('
 def split_string(string: str) -> tuple:
-    parts = string.split( "(")  
-    if len(parts) == 2:
-        parts[1] = parts[1].split("/")
-        parts[1] = [remove_ambigious_characters(part) for part in parts[1]]
-        parts[0] = remove_ambigious_characters(parts[0])
-        return parts[0], parts[1][0], parts[1][1]
-    return None
+    match = re.match(r"(\d+)%\s*\(\s*(\d+)\s*/\s*(\d+)\s*\)", string)
+    if match:
+        percentage, first_value, second_value = match.groups()
+        return percentage.strip(), first_value.strip(), second_value.strip()
+    
+    match = re.match(r"(\d+)\s*/\s*(\d+)\s*\(\s*(\d+)%\s*\)", string)
+    if match:
+        first_value, second_value, percentage = match.groups()
+        return percentage.strip(), first_value.strip(), second_value.strip()
+    
+    return None, None, None
+
+
+# Split strings into two if they contain an hyphen and the next string starts with a capital letter
+# split_capital_string: (str) -> tuple
+# interp. split_capital_string takes a string and splits it into two parts based on the first occurrence of '.'
+#         if the next string starts with a capital letter
+def split_capital_string(string: str) -> tuple:
+    string = re.sub(r'\.(?!\s|$)', '. ', string)
+    string = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', string)
+    string = re.sub(r'\s+', ' ', string).strip()
+    parts = string.split(". ")
+    if len(parts) >= 2:
+        last_part = parts[-1]
+        first_part = "".join(parts[:-1])
+        return first_part.strip(), last_part.strip()
+    return string.strip(), ""
+
+
+# Seperate and remove merged (copy of original) text based on the merged text starting with capital letter
+# remove_duplicate_strings: (str) -> str
+# interp. seperates and returns only one string from the duplicated string
+def remove_duplicate_strings(string: str) -> str:
+    return re.sub(r'(.+?)\1', r'\1', string).strip()
+    

@@ -12,6 +12,9 @@ STATS_FIRST_HALF = '/match-statistics/1'
 STATS_SECOND_HALF = '/match-statistics/2'
 LINEUP = 'lineups'
 
+PLAYER_STATS = "player-statistics/shots"
+
+
 # Odds
 ODDS_1X2_FULL_TIME = 'odds-comparison/1x2-odds/full-time'
 ODDS_1X2_FIRST_HALF = 'odds-comparison/1x2-odds/1st-half'

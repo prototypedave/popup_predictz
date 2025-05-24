@@ -82,7 +82,7 @@ async def get_tuple_list_of_players(page: Page, player_locator: Locator, cls_nam
 # Page, Page -> MatchLineups
 # scrape match lineups from the given page and player page
 #     return MatchLineups object with all the data
-async def get_match_lineups(page: Page, player_page: Page) -> dict:
+async def get_match_lineups(page: Page, player_page: Page) -> MatchLineups:
     match_lineups = MatchLineups()
 
     home_formation, away_formation = await get_formations(page=page)
@@ -125,3 +125,5 @@ async def get_match_lineups(page: Page, player_page: Page) -> dict:
                 if key == "starting":
                     print(f"Home Starting: {home_data}, Away Starting: {away_data}")
                 break
+    
+    return match_lineups
