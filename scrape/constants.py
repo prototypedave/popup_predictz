@@ -10,7 +10,7 @@ SUMMARY = 'match-summary/match-summary'
 STATS_FULL_TIME = 'match-statistics/0'
 STATS_FIRST_HALF = '/match-statistics/1'
 STATS_SECOND_HALF = '/match-statistics/2'
-LINEUP = 'match-summary/lineups'
+LINEUP = 'lineups'
 
 # Odds
 ODDS_1X2_FULL_TIME = 'odds-comparison/1x2-odds/full-time'

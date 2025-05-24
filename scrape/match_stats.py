@@ -1,5 +1,4 @@
 # Functions to scrape stats from matches that have already played
-from collections import defaultdict
 from .constants import STAT_MAP, EXTRA_STATS_MAP
 from playwright.sync_api import Page
 from .utils import scrape_locator_lists, scrape_text_content

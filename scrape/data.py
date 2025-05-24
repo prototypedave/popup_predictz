@@ -206,3 +206,49 @@ class MatchStats:
     red_cards_away: Optional[int] = None                                    # Red cards for away team
     penalty_home: Optional[int] = None                                    # Penalties for home team
     penalty_away: Optional[int] = None                                    # Penalties for away team
+
+
+# ==============================================================
+# Coach Info - coach data
+# ==============================================================
+
+# Coach is Dict
+# interp. data class representing data for a coach
+
+@dataclass
+class Coach:
+    name: str                               # Name of the coach
+    team: str                               # Team the coach is managing
+    dob: str                                # Date of birth
+    country: str                            # Country of origin
+
+
+# ==============================================================
+# Match Lineups - all information for a given match
+# ==============================================================
+
+# MatchLineups is Dict
+# interp. data class to represent match lineups data
+
+@dataclass
+class MatchLineups:
+    home_formation: Optional[str] = None                               # Home team formation
+    away_formation: Optional[str] = None                               # Away team formation
+    home_team_rating: Optional[float] = None                           # Home team rating
+    away_team_rating: Optional[float] = None                           # Away team rating
+    home_starting: list[Player] = field(default_factory=list)          # Home team starting players
+    home_substituted: list[Player] = field(default_factory=list)       # Home team substituted players
+    home_substitutes: list[Player] = field(default_factory=list)       # Home team substitutes
+    home_missing: list[Player] = field(default_factory=list)           # Home team missing players
+    home_coaches: list[Coach] = field(default_factory=list)            # Home team coaches
+    home_predicted: list[Player] = field(default_factory=list)         # Home team predicted players
+    home_questionable: list[Player] = field(default_factory=list)      # Home team questionable players
+    home_will_not_play: list[Player] = field(default_factory=list)     # Home team players that will not play
+    away_starting: list[Player] = field(default_factory=list)          # Away team starting players
+    away_substituted: list[Player] = field(default_factory=list)       # Away team substituted players
+    away_substitutes: list[Player] = field(default_factory=list)       # Away team substitutes
+    away_missing: list[Player] = field(default_factory=list)           # Away team missing players
+    away_coaches: list[Coach] = field(default_factory=list)            # Away team coaches
+    away_predicted: list[Player] = field(default_factory=list)         # Away team predicted players
+    away_questionable: list[Player] = field(default_factory=list)      # Away team questionable players
+    away_will_not_play: list[Player] = field(default_factory=list)     # Away team players that will not play

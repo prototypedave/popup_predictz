@@ -3,9 +3,10 @@ import asyncio
 from playwright.async_api import async_playwright, Page
 from .utils import scrape_locator_lists, scrape_attributes
 from .match_summary import get_match_summary
-from .constants import STATS_FULL_TIME
+from .constants import STATS_FULL_TIME, LINEUP
 from .func_util import is_valid_url, assemble_url
 from .match_stats import get_match_stats
+from .match_lineups import get_match_lineups
 import time
 
 # Flashscore -> Matches
@@ -51,6 +52,8 @@ class FlashScoreScraper:
         async with self.semaphore:
             summary_page = await self.context.new_page()
             stats_page = await self.context.new_page()
+            lineups_page = await self.context.new_page()
+            players_page = await self.context.new_page()
 
             try: 
                 await summary_page.goto(url)
@@ -58,17 +61,25 @@ class FlashScoreScraper:
 
                 if is_valid_url(summary_page.url, "/match-summary/match-summary"):
                     stats_url = assemble_url(summary_page.url, "/match-summary", STATS_FULL_TIME)
-                    await stats_page.goto(stats_url)
-                    await stats_page.wait_for_selector(".container__livetable .container__detailInner .section")
+                    lineup_url = assemble_url(summary_page.url, "/match-summary", LINEUP)
                     
-                    stats_tasks = get_match_stats(stats_page)
-                    stats = await asyncio.gather(stats_tasks)
-                    print(stats)
+                    #await stats_page.goto(stats_url)
+                    #await stats_page.wait_for_selector(".container__livetable .container__detailInner .section")
 
-                summary_tasks = get_match_summary(summary_page)
-                summary = await asyncio.gather(summary_tasks)
+                    await lineups_page.goto(lineup_url)
+                    await lineups_page.wait_for_selector(".container__livetable .container__detailInner .section")
+                    
+                    #stats_tasks = get_match_stats(stats_page)
+                    #stats = await asyncio.gather(stats_tasks)
+
+                    lineup_tasks = get_match_lineups(lineups_page, players_page)
+                    lineups = await asyncio.gather(lineup_tasks)
+                    
+
+                #summary_tasks = get_match_summary(summary_page)
+                #summary = await asyncio.gather(summary_tasks)
                 
-                return {'summary': summary, 'stats': stats}
+                #return {'summary': summary, 'stats': stats}
 
             except Exception as e:
                 return {}
@@ -76,6 +87,7 @@ class FlashScoreScraper:
             finally:
                 await summary_page.close()
                 await stats_page.close()
+                await lineups_page.close()
 
     async def run(self, home_url: str):
         await self.start()

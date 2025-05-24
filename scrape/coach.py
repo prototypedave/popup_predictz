@@ -1,7 +1,7 @@
 # Scrape the coach page of a website
 
 from playwright.sync_api import Page
-from .data import CoachInfo
+from .data import Coach
 from .constants import FLASHSCORE
 from .utils import scrape_text_content
 from .func_util import parse_bracket
@@ -9,7 +9,7 @@ from .func_util import parse_bracket
 # Page, str -> CoachInfo
 # scrapes coaches information from the provided link if its a valid link
 #   returns CoachInfo
-async def scrape_coach_data(page: Page, coach_link: str) -> CoachInfo | None:
+async def scrape_coach_data(page: Page, coach_link: str) -> Coach | None:
     try:
         link = FLASHSCORE + coach_link
         await page.goto(link)
@@ -28,7 +28,7 @@ async def scrape_coach_data(page: Page, coach_link: str) -> CoachInfo | None:
             dob_raw = await player_info[1].text_content()
             dob = parse_bracket(dob_raw.strip()) if dob_raw else None
 
-        return CoachInfo(
+        return Coach(
             name=name,
             dob=dob,
             team=parse_bracket(team),
