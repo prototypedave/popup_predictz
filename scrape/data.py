@@ -252,3 +252,159 @@ class MatchLineups:
     away_predicted: list[Player] = field(default_factory=list)         # Away team predicted players
     away_questionable: list[Player] = field(default_factory=list)      # Away team questionable players
     away_will_not_play: list[Player] = field(default_factory=list)     # Away team players that will not play
+
+
+# ====================================================================
+# General Player Statistics - player statistics data
+# ====================================================================
+
+# GenralPlayerStats is Dict
+# interp. data class representing general player statistics data
+
+@dataclass
+class GeneralPlayerStats:
+    player_name: str                          # Name of the player
+    position: str                             # Position of the player
+    rating: Optional[float] = None            # Player rating
+    minutes_played: Optional[int] = None      # Minutes played by the player
+    goals: Optional[int] = None               # Goals scored by the player
+    assists: Optional[int] = None             # Assists made by the player
+    own_goals: Optional[int] = None           # Assists made by the player
+    yellow_cards: Optional[int] = None        # Yellow cards received by the player
+    red_cards: Optional[int] = None           # Red cards received by the player
+
+
+# ====================================================================
+# GoalKeeping Statistics - goalkeeper statistics data
+# ====================================================================
+
+# GoalKeepingStats is Dict
+# interp. data class representing goalkeeper statistics data
+
+@dataclass
+class GoalKeepingStats:
+    player_name: str                          # Name of the goalkeeper
+    position: str                             # Default position is goalkeeper
+    saves: Optional[int] = None               # Saves made by the goalkeeper
+    goals_conceded: Optional[int] = None      # Goals conceded by the goalkeeper
+    goals_prevented: Optional[float] = None   # Goals prevented by the goalkeeper
+    xGOT_faced: Optional[float] = None        # Expected goals on target faced by the goalkeeper
+    punches: Optional[int] = None             # Punches made by the goalkeeper
+    throws: Optional[int] = None              # Throws made by the goalkeeper
+    act_as_sweeper: Optional[int] = None      # Actions as a sweeper made by the goalkeeper
+
+
+# ====================================================================
+# Defensive Statistics - player defensive statistics data
+# ====================================================================
+
+# DefensiveStats is Dict
+# interp. data class representing player defensive statistics data
+
+@dataclass
+class DefensiveStats:
+    player_name: str                                        # Name of the player
+    position: str                                           # Position of the player
+    total_duels: Optional[int] = None                       # Total duels attempted by the player
+    successful_aerial_duels: Optional[int] = None           # Successful aerial duels by the player
+    total_aerial_duels: Optional[int] = None                # Total aerial duels attempted by the player
+    percentage_aerial_duels_won: Optional[float] = None     # Percentage of aerial duels won by the player
+    successful_ground_duels: Optional[int] = None           # Successful ground duels by the player
+    total_ground_duels: Optional[int] = None                # Total ground duels attempted by the player
+    percentage_ground_duels_won: Optional[float] = None     # Percentage of ground duels won by the player
+    successful_tackles: Optional[int] = None                # Tackles made by the player
+    total_tackles: Optional[int] = None                     # Total tackles attempted by the player
+    percentage_tackles_won: Optional[float] = None          # Percentage of tackles won by the player
+    fouls_committed: Optional[int] = None                   # Fouls committed by the player
+    interceptions: Optional[int] = None                     # Interceptions made by the player
+    clearances: Optional[int] = None                        # Clearances made by the player
+    errors_leading_to_goal: Optional[int] = None            # Errors leading to a goal by the player
+    errors_leading_to_shot: Optional[int] = None            # Errors leading to a shot by the player
+
+
+# ====================================================================
+# Attacking Statistics - player attacking statistics data
+# ====================================================================
+
+# AttackingStats is Dict
+# interp. data class representing player attacking statistics data
+
+@dataclass
+class AttackingStats:
+    player_name: str                                        # Name of the player
+    position: str                                           # Position of the player
+    touches_in_opposition: Optional[int] = None             # Touches in opposition box by the player
+    successful_dribbles: Optional[int] = None               # Successful dribbles by the player
+    total_dribbles: Optional[int] = None                    # Total dribbles attempted by the player
+    percentage_dribbles_won: Optional[float] = None         # Percentage of dribbles won by the player
+    big_chances_missed: Optional[int] = None                # Big chances missed by the player
+    touches: Optional[int] = None                           # Total touches by the player
+    fouls_suffered: Optional[int] = None                    # Fouls suffered by the player
+    offsides: Optional[int] = None                          # Offsides committed by the player
+
+
+# ====================================================================
+# Passing Statistics - player passing statistics data
+# ====================================================================
+
+# PassingStats is Dict
+# interp. data class representing player passing statistics data
+
+@dataclass
+class PassingStats:
+    player_name: str                                        # Name of the player
+    position: str                                           # Position of the player
+    accurate_passes: Optional[int] = None                   # Accurate passes made by the player
+    total_passes: Optional[int] = None                      # Total passes attempted by the player
+    passes_accuracy: Optional[float] = None                 # Passes accuracy percentage by the player
+    big_chances_created: Optional[int] = None               # Big chances created by the player
+    assists: Optional[int] = None                           # Assists made by the player
+    xA: Optional[float] = None                              # Expected assists by the player
+    accurate_passes_in_final_third: Optional[int] = None    # Accurate passes in final third by the player
+    total_passes_in_final_third: Optional[int] = None       # Total passes in final third attempted by the player
+    accuracy_passes_in_final_third: Optional[float] = None  # Passes accuracy in final third by the player 
+    accurate_long_passes: Optional[int] = None              # Accurate long passes made by the player
+    total_long_passes: Optional[int] = None                 # Total long passes attempted by the player
+    accuracy_long_passes: Optional[float] = None            # Long passes accuracy percentage by the player
+    accurate_crosses: Optional[int] = None                  # Accurate crosses made by the player
+    total_crosses: Optional[int] = None                     # Total crosses attempted by the player
+    accuracy_crosses: Optional[float] = None                # Crosses accuracy percentage by the player
+
+
+# ====================================================================
+# Shots Statistics - player shots statistics data
+# ====================================================================
+
+# ShotsStats is Dict
+# interp. data class representing player shots statistics data
+
+@dataclass
+class ShotsStats:
+    player_name: str                                        # Name of the player
+    position: str                                           # Position of the player
+    goals: Optional[int] = None                             # Goals scored by the player
+    xG: Optional[float] = None                              # Expected goals by the player
+    xGOT: Optional[float] = None                            # Expected goals on target by the player
+    shots_on_target: Optional[int] = None                   # Shots on target by the player
+    shots_off_target: Optional[int] = None                  # Shots off target by the player
+    blocked_shots: Optional[int] = None                     # Blocked shots by the player
+    shots_inside_the_box: Optional[int] = None              # Shots inside the box by the player
+    shots_outside_the_box: Optional[int] = None             # Shots outside the box by the player
+    headed_shots: Optional[int] = None                      # Headed shots by the player
+
+
+# ====================================================================
+# Player Statistics - all player statistics data
+# ====================================================================
+
+# PlayerStats is Dict
+# interp. data class representing all player statistics data
+
+@dataclass
+class PlayerStats:
+    general: GeneralPlayerStats = field(default_factory=GeneralPlayerStats)          # General player statistics
+    goalkeeping: GoalKeepingStats = field(default_factory=GoalKeepingStats)          # Goalkeeping statistics
+    defensive: DefensiveStats = field(default_factory=DefensiveStats)                # Defensive statistics
+    attacking: AttackingStats = field(default_factory=AttackingStats)                # Attacking statistics
+    passing: PassingStats = field(default_factory=PassingStats)                      # Passing statistics
+    shots: ShotsStats = field(default_factory=ShotsStats)                            # Shots statistics
