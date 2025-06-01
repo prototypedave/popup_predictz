@@ -420,9 +420,9 @@ class PlayerStats:
 
 @dataclass
 class MatchOutcomeOdds:
-    fulltime_home: float                        # Odds for home team to win at full time
-    fulltime_draw: float                        # Odds for both teams to tie at full time
-    fulltime_away: float                        # Odds for away team to win at full time
+    fulltime_home: Optional[float] = None                        # Odds for home team to win at full time
+    fulltime_draw: Optional[float] = None                       # Odds for both teams to tie at full time
+    fulltime_away: Optional[float] = None                       # Odds for away team to win at full time
     first_half_home: Optional[float] = None     # Odds for home team to win at first half
     first_half_draw: Optional[float] = None     # Odds for 1st half to end as a tie
     first_half_away: Optional[float] = None     # Odds for away team to win at half time
@@ -447,18 +447,25 @@ class TotalGoalsOdds:
     over_four_five: Optional[float] = None                  # minimum of 5 goals
     over_five_five: Optional[float] = None                  # minimum of 6 goals
     over_six_five: Optional[float] = None                   # minimum of 7 goals
-    over_seven_five: Optional[float] = None                 # minimum of 8 goals
-    over_eight_five: Optional[float] = None                 # minimum of 9 goals
     first_half_over_zero_five: Optional[float] = None       # first half total 1 or more
     first_half_over_one_five: Optional[float] = None        # first half total 2 or more
     first_half_over_two_five: Optional[float] = None        # first half total 3 or more
-    first_half_over_three_five: Optional[float] = None      # first half total 4 or more
-    first_half_over_four_five: Optional[float] = None       # first half total 5 or more
     second_half_over_zero_five: Optional[float] = None       # second half total 1 or more
     second_half_over_one_five: Optional[float] = None        # second half total 2 or more
     second_half_over_two_five: Optional[float] = None        # second half total 3 or more
-    second_half_over_three_five: Optional[float] = None      # second half total 4 or more
-    second_half_over_four_five: Optional[float] = None       # second half total 5 or more
+    under_zero_five: Optional[float] = None                  # A total of 1 or more goals to be scored
+    under_one_five: Optional[float] = None                   # A total of 2 or more goals to be scored
+    under_two_five: Optional[float] = None                   # 3 or more
+    under_three_five: Optional[float] = None                 # 4 or more
+    under_four_five: Optional[float] = None                  # minimum of 5 goals
+    under_five_five: Optional[float] = None                  # minimum of 6 goals
+    under_six_five: Optional[float] = None                   # minimum of 7 goals
+    first_half_under_zero_five: Optional[float] = None       # first half total 1 or more
+    first_half_under_one_five: Optional[float] = None        # first half total 2 or more
+    first_half_under_two_five: Optional[float] = None        # first half total 3 or more
+    second_half_under_zero_five: Optional[float] = None       # second half total 1 or more
+    second_half_under_one_five: Optional[float] = None        # second half total 2 or more
+    second_half_under_two_five: Optional[float] = None        # second half total 3 or more
 
 
 # ====================================================================
@@ -470,23 +477,14 @@ class TotalGoalsOdds:
 
 @dataclass
 class HandicapOdds:
-    home_four_goals: Optional[float] = None             # Home team to start with 4 goals ahead
-    home_three_goals: Optional[float] = None            # Home team to start with 3 goals ahead
     home_two_goals: Optional[float] = None              # Home team to start with 2 goals ahead
     home_one_goal: Optional[float] = None               # Home team to start with 1 goal ahead
     away_one_goal: Optional[float] = None               # Away team to start with 1 goal ahead
     away_two_goals: Optional[float] = None              # Away team to start with 2 goals ahead
-    away_three_goals: Optional[float] = None            # Away team to start with 3 goals ahead
-    away_four_goals: Optional[float] = None             # Away team to start with 4 goals ahead
-    first_half_home_two_goals: Optional[float] = None   # First half home team start with 2 goals ahead
     first_half_home_one_goal: Optional[float] = None    # First half home team start with 1 goal ahead
-    first_half_away_two_goals: Optional[float] = None   # First half away team start with 2 goals ahead
     first_half_away_one_goal: Optional[float] = None    # First half away team start with 1 goal ahead
-    second_half_home_two_goals: Optional[float] = None   # second half home team start with 2 goals ahead
     second_half_home_one_goal: Optional[float] = None    # second half home team start with 1 goal ahead
-    second_half_away_two_goals: Optional[float] = None   # second half away team start with 2 goals ahead
     second_half_away_one_goal: Optional[float] = None    # second half aay team start with 1 goal ahead
-
 
 
 # =====================================================================
@@ -498,12 +496,12 @@ class HandicapOdds:
 
 @dataclass
 class BTTSOdds:
-    yes: float                                          # both team teams to score
-    no: float                                           # none or only one team to score
-    first_half_yes: Optional[float]                     # first half both teams to score
-    first_half_no: Optional[float]                      # first half both teams not to score
-    second_half_yes: Optional[float]                    # second half both teams to score
-    second_half_no: Optional[float]                     # second half both teams not to score
+    yes: Optional[float]  = None                              # both team teams to score
+    no: Optional[float]   = None                              # none or only one team to score
+    first_half_yes: Optional[float]  = None                   # first half both teams to score
+    first_half_no: Optional[float]   = None                   # first half both teams not to score
+    second_half_yes: Optional[float] = None                   # second half both teams to score
+    second_half_no: Optional[float]  = None                   # second half both teams not to score
 
 
 # =====================================================================
@@ -515,15 +513,15 @@ class BTTSOdds:
 
 @dataclass
 class DoubleChanceOdds:
-    full_time_home_draw: Optional[float]                # Home team to win or draw
-    full_time_home_away: Optional[float]                # Home or away team to win
-    full_time_draw_away: Optional[float]                # Draw or away team to win
-    first_half_home_draw: Optional[float]               # Home team to win or draw at half time
-    first_half_draw_away: Optional[float]               # Draw or away team to win at half time
-    first_half_home_away: Optional[float]               # Home or away team to win at halr time
-    second_half_home_draw: Optional[float]               # Home team to win or draw at second half
-    second_half_draw_away: Optional[float]               # Draw or away team to win at second half
-    second_half_home_away: Optional[float]               # Home or away team to win at second half
+    full_time_home_draw: Optional[float]  = None               # Home team to win or draw
+    full_time_home_away: Optional[float]  = None               # Home or away team to win
+    full_time_draw_away: Optional[float]  = None               # Draw or away team to win
+    first_half_home_draw: Optional[float] = None               # Home team to win or draw at half time
+    first_half_draw_away: Optional[float] = None               # Draw or away team to win at half time
+    first_half_home_away: Optional[float] = None               # Home or away team to win at halr time
+    second_half_home_draw: Optional[float]= None               # Home team to win or draw at second half
+    second_half_draw_away: Optional[float]= None               # Draw or away team to win at second half
+    second_half_home_away: Optional[float]= None               # Home or away team to win at second half
 
 
 # ======================================================================
@@ -535,10 +533,10 @@ class DoubleChanceOdds:
 
 @dataclass
 class DrawNoBetOdds:
-    full_time_home: Optional[float]                 # Odds for home team to win, if draw no bet
-    full_time_away: Optional[float]                 # Odss for away team to win, if draw no bet
-    half_time_home: Optional[float]                 # Odds for home team to win at half time, if draw no bet
-    half_time_away: Optional[float]                 # Odds for aeay team to win at half time, if draw no bet
+    full_time_home: Optional[float]  = None               # Odds for home team to win, if draw no bet
+    full_time_away: Optional[float]  = None               # Odss for away team to win, if draw no bet
+    half_time_home: Optional[float]  = None               # Odds for home team to win at half time, if draw no bet
+    half_time_away: Optional[float]  = None               # Odds for aeay team to win at half time, if draw no bet
 
 
 # ====================================================================
@@ -550,30 +548,30 @@ class DrawNoBetOdds:
 
 @dataclass
 class CorrectScoreOdds:
-    home_one_zero: Optional[float]                      # match score 1 - 0
-    home_two_zero: Optional[float]                      # match score 2 - 0
-    home_two_one: Optional[float]                       # match score 2 - 1
-    home_three_zero: Optional[float]                    # match score 3 - 0
-    home_three_one: Optional[float]                     # match score 3 - 1
-    home_three_two: Optional[float]                     # match score 3 - 2
-    home_four_zero: Optional[float]                     # match score 4 - 0
-    home_four_one: Optional[float]                      # match score 4 - 1
-    home_four_two: Optional[float]                      # match score 4 - 2
-    home_four_three: Optional[float]                    # match score 4 - 3
-    draw_zero_zero: Optional[float]                     # match score 0 - 0
-    draw_one_one: Optional[float]                       # match score 1 - 1
-    draw_two_two: Optional[float]                       # match score 2 - 2
-    draw_three_three: Optional[float]                   # match score 3 - 3
-    away_zero_one: Optional[float]                      # match score 0 - 1
-    away_zero_two: Optional[float]                      # match score 0 - 2
-    away_one_two: Optional[float]                       # match score 1 - 2
-    away_zero_three: Optional[float]                    # match score 0 - 3
-    away_one_three: Optional[float]                     # match score 1 - 3
-    away_two_three: Optional[float]                     # match score 2 - 3
-    away_zero_four: Optional[float]                     # match score 0 - 4
-    away_one_four: Optional[float]                      # match score 1 - 4
-    away_two_four: Optional[float]                      # match score 2 - 4
-    away_three_four: Optional[float]                    # match score 3 - 4
+    home_one_zero: Optional[float] = None                      # match score 1 - 0
+    home_two_zero: Optional[float] = None                      # match score 2 - 0
+    home_two_one: Optional[float] = None                       # match score 2 - 1
+    home_three_zero: Optional[float] = None                    # match score 3 - 0
+    home_three_one: Optional[float] = None                     # match score 3 - 1
+    home_three_two: Optional[float] = None                     # match score 3 - 2
+    home_four_zero: Optional[float] = None                     # match score 4 - 0
+    home_four_one: Optional[float] = None                      # match score 4 - 1
+    home_four_two: Optional[float] = None                      # match score 4 - 2
+    home_four_three: Optional[float] = None                    # match score 4 - 3
+    draw_zero_zero: Optional[float] = None                     # match score 0 - 0
+    draw_one_one: Optional[float] = None                       # match score 1 - 1
+    draw_two_two: Optional[float] = None                       # match score 2 - 2
+    draw_three_three: Optional[float] = None                   # match score 3 - 3
+    away_zero_one: Optional[float] = None                      # match score 0 - 1
+    away_zero_two: Optional[float] = None                      # match score 0 - 2
+    away_one_two: Optional[float] = None                       # match score 1 - 2
+    away_zero_three: Optional[float] = None                    # match score 0 - 3
+    away_one_three: Optional[float] = None                     # match score 1 - 3
+    away_two_three: Optional[float] = None                     # match score 2 - 3
+    away_zero_four: Optional[float] = None                     # match score 0 - 4
+    away_one_four: Optional[float] = None                      # match score 1 - 4
+    away_two_four: Optional[float] = None                      # match score 2 - 4
+    away_three_four: Optional[float] = None                    # match score 3 - 4
 
 
 # ==========================================================================
@@ -585,12 +583,49 @@ class CorrectScoreOdds:
 
 @dataclass
 class HalftimeFulltimeOdds:
-    home_home: Optional[float]                          # Home to win in both halfs 
-    home_draw: Optional[float]                          # Home team to win at first half and draw at full time
-    home_away: Optional[float]                          # Home team to win at first half and away to win at full time
-    draw_home: Optional[float]                          # draw at first half and home team to win at full time
-    draw_draw: Optional[float]                          # draw in both halfs
-    draw_away: Optional[float]                          # draw at first half and away win at full time
-    away_away: Optional[float]                          # away team to win in both halfs
-    away_home: Optional[float]                          # away team to win at first half and home to win at full time
+    home_home: Optional[float] = None                          # Home to win in both halfs 
+    home_draw: Optional[float] = None                          # Home team to win at first half and draw at full time
+    home_away: Optional[float] = None                          # Home team to win at first half and away to win at full time
+    draw_home: Optional[float] = None                          # draw at first half and home team to win at full time
+    draw_draw: Optional[float] = None                          # draw in both halfs
+    draw_away: Optional[float] = None                          # draw at first half and away win at full time
+    away_home: Optional[float] = None                          # away team to win at first half and home to win at full time
+    away_away: Optional[float] = None                          # away team to win in both halfs
+    away_draw: Optional[float] = None                          # away win at first half and draw at full time
+    
 
+# =========================================================================
+# ODD EVEN
+# =========================================================================
+
+# OddEven
+# interp. data class representing odds value for the outcome of the match if its odd or even
+
+@dataclass
+class OddEven:
+    odd: Optional[float]  = None                                # match outcome to be odd value
+    even: Optional[float]  = None                               # match outcome to be even value
+    first_half_odd: Optional[float]  = None                     # first half odd value
+    first_half_even: Optional[float]  = None                    # first half even value
+    second_half_odd: Optional[float]  = None                    # second half odd value
+    second_half_even: Optional[float] = None                    # second half even value
+    
+
+# =========================================================================
+# ODDS_DICT
+# =========================================================================
+
+# ODDS_DICT  is Dict
+# interp. map each data class with their respective names for easier callback
+
+ODDS_DICT = {
+    "halftime_fulltime": HalftimeFulltimeOdds,
+    "correct_score": CorrectScoreOdds,
+    "draw_no_bet": DrawNoBetOdds,
+    "odd_even": OddEven,
+    "double_chance": DoubleChanceOdds,
+    "btts": BTTSOdds,
+    "asian_handicap": HandicapOdds,
+    "over_under": TotalGoalsOdds,
+    "1x2": MatchOutcomeOdds,
+}

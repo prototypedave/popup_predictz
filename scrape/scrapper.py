@@ -8,11 +8,13 @@ from .func_util import is_valid_url, assemble_url
 from .match_stats import get_match_stats
 from .match_lineups import get_match_lineups
 from .player_stats import get_player_stats
-import time
+from .match_odds import get_match_odds
+import time, re
+
+
 
 # Flashscore -> Matches
 # scrape a list of matches with there data
-
 class FlashScoreScraper:
 
     # Initialize the Scraper
@@ -52,12 +54,13 @@ class FlashScoreScraper:
     async def scrape_match_details(self, url:str):
         async with self.semaphore:
             summary_page = await self.context.new_page()
+            odds_page = await self.context.new_page()
             
             try: 
                 await summary_page.goto(url)
                 await summary_page.wait_for_selector(".duelParticipant")
 
-                if is_valid_url(summary_page.url, "/match-summary/match-summary"):
+                """if is_valid_url(summary_page.url, "/match-summary/match-summary"):
                     stats_url = assemble_url(summary_page.url, "/match-summary", STATS_FULL_TIME)
                     lineup_url = assemble_url(summary_page.url, "/match-summary", LINEUP)
                     player_stats_url = assemble_url(summary_page.url, "/match-summary", PLAYER_STATS)
@@ -77,10 +80,9 @@ class FlashScoreScraper:
                     #stats = await asyncio.gather(stats_tasks)
 
                     #lineup_tasks = get_match_lineups(lineups_page, players_page)
-                    #lineups = await asyncio.gather(lineup_tasks)
-
-                    
-
+                    #lineups = await asyncio.gather(lineup_tasks)"""
+    
+                await get_match_odds(page=odds_page, url=url)
 
                     
 
@@ -94,13 +96,16 @@ class FlashScoreScraper:
 
             finally:
                 await summary_page.close()
+                await odds_page.close()
                 
     
     async def helper_scrape(self, url: str, selector: str, function: callable):
         page = self.context.new_page()
         try:
             await page.goto(url)
+            print("Its working")
             await page.wait_for_selector(selector)
+            print("Even this")
             element = await function(page)
             return element
         except Exception as e:
