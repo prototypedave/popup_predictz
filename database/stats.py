@@ -1,0 +1,110 @@
+from sqlalchemy import Column, Integer, String, DateTime, Double
+from sqlalchemy.ext.asyncio import AsyncSession
+from scrape.data import MatchStats
+from .model import Base
+from dataclasses import asdict
+from .game import FootballGame
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+
+
+class Stats(Base):
+    __tablename__ = "match_stats"
+
+    game_id = Column(Integer, ForeignKey("football_games.id", ondelete="CASCADE"), unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    xg_home = Column(Double, nullable=False)
+    xg_away = Column(Double, nullable=False)
+    total_shots_home = Column(Integer, nullable=False)
+    total_shots_away = Column(Integer, nullable=False)
+    shots_on_target_home = Column(Integer, nullable=False)
+    shots_on_target_away = Column(Integer, nullable=False)
+    big_chances_home = Column(Integer, nullable=False)
+    big_chances_away = Column(Integer, nullable=False)
+    corners_home = Column(Integer, nullable=False)
+    corners_away = Column(Integer, nullable=False)
+    xg_on_target_home = Column(Double, nullable=False)
+    xg_on_target_away = Column(Double, nullable=False)
+    shots_off_target_home = Column(Integer, nullable=False)
+    shots_off_target_away = Column(Integer, nullable=False)
+    blocked_Shots_home = Column(Integer, nullable=False)
+    blocked_Shots_away = Column(Integer, nullable=False)
+    shots_inside_the_box_home = Column(Integer, nullable=False)
+    shots_inside_the_box_away = Column(Integer, nullable=False)
+    shots_outside_the_box_home = Column(Integer, nullable=False)
+    shots_outside_the_box_away = Column(Integer, nullable=False)
+    woodwork_home = Column(Integer, nullable=False)
+    woodwork_away = Column(Integer, nullable=False)
+    xA_home = Column(Double, nullable=False)
+    xA_away = Column(Double, nullable=False) 
+    xGOT_faced_home = Column(Double, nullable=False)
+    xGOT_faced_away = Column(Double, nullable=False)
+    possession_home = Column(Integer, nullable=False)
+    possession_away = Column(Integer, nullable=False)
+    touches_in_opposition_home = Column(Integer, nullable=False)
+    touches_in_opposition_away = Column(Integer, nullable=False)
+    total_passes_home = Column(Integer, nullable=False)
+    total_passes_away = Column(Integer, nullable=False)
+    successful_passes_home = Column(Integer, nullable=False)
+    successful_passes_away = Column(Integer, nullable=False)
+    total_through_passes_home = Column(Integer, nullable=False)
+    total_through_passes_away = Column(Integer, nullable=False)
+    successful_through_passes_home = Column(Integer, nullable=False)
+    successful_through_passes_away = Column(Integer, nullable=False)
+    total_long_passes_home = Column(Integer, nullable=False)
+    total_long_passes_away = Column(Integer, nullable=False)
+    successful_long_passes_home = Column(Integer, nullable=False)
+    successful_long_passes_away = Column(Integer, nullable=False)
+    passes_in_final_third_home = Column(Integer, nullable=False)
+    passes_in_final_third_away = Column(Integer, nullable=False)
+    successful_passes_in_final_third_home = Column(Integer, nullable=False)
+    successful_passes_in_final_third_away = Column(Integer, nullable=False)
+    total_crosses_home = Column(Integer, nullable=False)
+    total_crosses_away = Column(Integer, nullable=False)
+    successful_crosses_home = Column(Integer, nullable=False)
+    successful_crosses_away = Column(Integer, nullable=False)
+    offsides_home = Column(Integer, nullable=False)
+    offsides_away = Column(Integer, nullable=False)
+    free_kicks_home = Column(Integer, nullable=False)
+    free_kicks_away = Column(Integer, nullable=False)
+    throw_ins_home = Column(Integer, nullable=False)
+    throw_ins_away = Column(Integer, nullable=False)
+    fouls_home = Column(Integer, nullable=False)
+    fouls_away = Column(Integer, nullable=False)
+    tackles_home = Column(Integer, nullable=False)
+    tackles_away = Column(Integer, nullable=False)
+    duels_won_home = Column(Integer, nullable=False)
+    duels_won_away = Column(Integer, nullable=False)
+    clearances_home = Column(Integer, nullable=False)
+    clearances_away = Column(Integer, nullable=False)
+    interceptions_home = Column(Integer, nullable=False)
+    interceptions_away = Column(Integer, nullable=False)
+    errors_leading_to_goal_home = Column(Integer, nullable=False)
+    errors_leading_to_goal_away = Column(Integer, nullable=False)
+    errors_leading_to_shot_home = Column(Integer, nullable=False)
+    errors_leading_to_shot_away = Column(Integer, nullable=False)
+    goalkeeper_saves_home = Column(Integer, nullable=False)
+    goalkeeper_saves_away = Column(Integer, nullable=False)
+    goals_prevented_home = Column(Integer, nullable=False)
+    goals_prevented_away = Column(Integer, nullable=False)
+    yellow_cards_home = Column(Integer, nullable=False)
+    yellow_cards_away = Column(Integer, nullable=False)
+    red_cards_home = Column(Integer, nullable=False)
+    red_cards_away = Column(Integer, nullable=False)
+    penalty_home = Column(Integer, nullable=False)
+    penalty_away = Column(Integer, nullable=False)
+
+    game = relationship("FootballGame", back_populates="stats")
+
+
+async def add_stats(session: AsyncSession, stats: MatchStats, game_id: int):
+    stats_dict = asdict(stats)
+    valid_keys = set(Stats.__table__.columns.keys())
+    stats_dict["game_id"] = game_id
+
+    filtered_stats = {key: value for key, value in stats_dict.items() if key in valid_keys}
+
+    new_stats = Stats(**filtered_stats)
+    session.add(new_stats)
+    await session.commit()
+    print("Stats saved for game ID:", game_id)
