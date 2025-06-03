@@ -1,7 +1,7 @@
 from sqlalchemy.orm import declarative_base
 
 # Target database and credentials
-DB_NAME = "your_db"
+DB_NAME = "flashscore"
 DB_USER = "postgres"
 DB_PASSWORD = "your_password"
 DB_HOST = "localhost"
