@@ -19,7 +19,7 @@ class FootballGame(Base):
     country = Column(String(100), nullable=False)
     referee = Column(String(100))
     venue = Column(String(100))
-    capacity = Column(String(100))
+    capacity = Column(Integer)
 
     stats = relationship("Stats", back_populates="game", uselist=False, cascade="all, delete-orphan")
 
