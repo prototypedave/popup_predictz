@@ -38,7 +38,6 @@ async def match_info(page: Page) -> tuple:
     away_team = await scrape_text_content(page, ".duelParticipant__away .participant__participantName a")
     score = await scrape_text_content(page, ".detailScore__wrapper")
     time_str = await scrape_text_content(page, ".duelParticipant__startTime div")
-
     home_score, away_score = parse_score(score)
     time = datetime.strptime(time_str, "%d.%m.%Y %H:%M")
 

@@ -58,14 +58,13 @@ STAT_MAP = {
         "shots outside": ["shots_outside_the_box_home", "shots_outside_the_box_away"],
         "woodwork": ["woodwork_home", "woodwork_away"],
         "possession": ["possession_home", "possession_away"],
-        "touches in opposition": ["touches_in_opposition_home, touches_in_opposition_away"],
+        "touches in opposition": ["touches_in_opposition_home", "touches_in_opposition_away"],
         "expected assists": ["xA_home", "xA_away"],
         "xgot faced": ["xGOT_faced_home", "xGOT_faced_away"],
         "offsides": ["offsides_home", "offsides_away"],
         "free kicks": ["free_kicks_home", "free_kicks_away"],  
         "throw ins": ["throw_ins_home", "throw_ins_away"],
         "fouls": ["fouls_home", "fouls_away"],
-        "tackles": ["tackles_home", "tackles_away"],
         "duels won": ["duels_won_home", "duels_won_away"],
         "clearances": ["clearances_home", "clearances_away"],
         "interceptions": ["interceptions_home", "interceptions_away"],
@@ -76,6 +75,7 @@ STAT_MAP = {
         "yellow cards": ["yellow_cards_home", "yellow_cards_away"],
         "red cards": ["red_cards_home", "red_cards_away"],
         "penalty": ["penalty_home", "penalty_away"],
+        "accurate through passes": ["through_passes_home", "through_passes_away"]
 }
 
 # stats that are not in the same order
@@ -84,10 +84,7 @@ EXTRA_STATS_MAP = {
             "home": ["passes_percentage_home", "successful_passes_home", "total_passes_home"],
             "away": ["passes_percentage_away", "successful_passes_away", "total_passes_away"]
         },
-        "through passes": {
-            "home": ["through_passes_percentage_home", "successful_through_passes_home", "total_through_passes_home"],
-            "away": ["through_passes_percentage_away", "successful_through_passes_away", "total_through_passes_away"]
-        },
+        
         "long passes": {
             "home": ["long_passes_percentage_home", "successful_long_passes_home", "total_long_passes_home"],
             "away": ["long_passes_percentage_away", "successful_long_passes_away", "total_long_passes_away"]
@@ -99,5 +96,9 @@ EXTRA_STATS_MAP = {
         "crosses": {
             "home": ["crosses_percentage_home", "successful_crosses_home", "total_crosses_home"],
             "away": ["crosses_percentage_away", "successful_crosses_away", "total_crosses_away"]
+        },
+        "tackles": {
+            "home": ["tackles_percentage_home", "successful_tackles_home", "tackles_home"],
+            "away": ["tackles_percentage_away", "successful_tackles_away", "tackles_away"]
         },
 }

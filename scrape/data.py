@@ -1,6 +1,7 @@
 from typing import NewType, Optional
 from datetime import datetime
 from dataclasses import dataclass, field
+from dataclasses import is_dataclass, fields
 
 Natural = NewType('Natural', int)
 
@@ -102,6 +103,21 @@ class MatchSummary:
     capacity: Optional[Natural] = None                                          # Attendance or stadium capacity 
 
 
+@dataclass
+class GameInfo:
+    start_time: datetime
+    league: str
+    home_team: str
+    away_team: str
+    home_score: str
+    away_score: str
+    round: str
+    country: str
+    referee: str
+    venue: str
+    capacity: int
+
+
 # ==============================================================
 # Match Stats - all statistics for a given match
 # ==============================================================
@@ -150,20 +166,16 @@ class MatchStats:
     successful_passes_away: Optional[int] = None                            # Successful passes for away team
     passes_percentage_home: Optional[int] = None                            # Passes percentage for home team
     passes_percentage_away: Optional[int] = None                            # Passes percentage for away team
-    total_through_passes_home: Optional[int] = None                         # Total through passes for home team
-    total_through_passes_away: Optional[int] = None                         # Total through passes for away team
-    successful_through_passes_home: Optional[int] = None                    # Successful through passes for home team
-    successful_through_passes_away: Optional[int] = None                    # Successful through passes for away team
-    through_passes_percentage_home: Optional[int] = None                    # Through passes percentage for home team
-    through_passes_percentage_away: Optional[int] = None                    # Through passes percentage for away team 
+    through_passes_home: Optional[int] = None                         # Total through passes for home team
+    through_passes_away: Optional[int] = None                         # Total through passes for away team
     total_long_passes_home: Optional[int] = None                            # Total long passes for home team
     total_long_passes_away: Optional[int] = None                            # Total long passes for away team
     successful_long_passes_home: Optional[int] = None                       # Successful long passes for home team
     successful_long_passes_away: Optional[int] = None                       # Successful long passes for away team
     long_passes_percentage_home: Optional[int] = None                       # Long passes percentage for home team
     long_passes_percentage_away: Optional[int] = None                       # Long passes percentage for away team
-    passes_in_final_third_home: Optional[int] = None                        # Passes in final third for home team
-    passes_in_final_third_away: Optional[int] = None                        # Passes in final third for away team
+    passes_in_final_third_home: Optional[int] = 0                        # Passes in final third for home team
+    passes_in_final_third_away: Optional[int] = 0                        # Passes in final third for away team
     successful_passes_in_final_third_home: Optional[int] = None             # Successful passes in final third for home team
     successful_passes_in_final_third_away: Optional[int] = None             # Successful passes in final third for away team
     passes_in_final_third_percentage_home: Optional[float] = None           # Passes in final third percentage for home team
@@ -180,12 +192,16 @@ class MatchStats:
     offsides_away: Optional[int] = None                                     # Offsides for away team
     free_kicks_home: Optional[int] = None                                   # Free kicks for home team
     free_kicks_away: Optional[int] = None                                   # Free kicks for away
-    throw_ins_home: Optional[int] = None                                    # Throw ins for home team
-    throw_ins_away: Optional[int] = None                                    # Throw ins for away
+    throw_ins_home: Optional[int] = 0                                    # Throw ins for home team
+    throw_ins_away: Optional[int] = 0                                    # Throw ins for away
     fouls_home: Optional[int] = None                                        # Fouls for home team
     fouls_away: Optional[int] = None                                        # Fouls for away team
     tackles_home: Optional[int] = None                                      # Tackles for home team
     tackles_away: Optional[int] = None                                      # Tackles for away team
+    successful_tackles_home: Optional[int] = None                           # Successful tackles attempted
+    successful_tackles_away: Optional[int] = None                           # Successful tackles attempted
+    tackles_percentage_home: Optional[int] = None                           # Percentage of successful tackles made
+    tackles_percentage_away: Optional[int] = None                           # Percentage of successful tackles made
     duels_won_home: Optional[int] = None                                    # Duels won for home team
     duels_won_away: Optional[int] = None                                    # Duels won for away team
     clearances_home: Optional[int] = None                                   # Clearances for home team
@@ -200,12 +216,12 @@ class MatchStats:
     goalkeeper_saves_away: Optional[int] = None                             # Goalkeeper saves for away team
     goals_prevented_home: Optional[float] = None                            # Goals prevented for home team
     goals_prevented_away: Optional[float] = None                            # Goals prevented for away team
-    yellow_cards_home: Optional[int] = None                                 # Yellow cards for home team
-    yellow_cards_away: Optional[int] = None                                 # Yellow cards for away team
-    red_cards_home: Optional[int] = None                                    # Red cards for home team
-    red_cards_away: Optional[int] = None                                    # Red cards for away team
-    penalty_home: Optional[int] = None                                    # Penalties for home team
-    penalty_away: Optional[int] = None                                    # Penalties for away team
+    yellow_cards_home: Optional[int] = 0                                # Yellow cards for home team
+    yellow_cards_away: Optional[int] = 0                                 # Yellow cards for away team
+    red_cards_home: Optional[int] = 0                                    # Red cards for home team
+    red_cards_away: Optional[int] = 0                                    # Red cards for away team
+    penalty_home: Optional[int] = 0                                    # Penalties for home team
+    penalty_away: Optional[int] = 0                                    # Penalties for away team
 
 
 # ==============================================================
@@ -263,8 +279,8 @@ class MatchLineups:
 
 @dataclass
 class GeneralPlayerStats:
-    player_name: str                          # Name of the player
-    position: str                             # Position of the player
+    player_name: Optional[str] = None                         # Name of the player
+    position: Optional[str] = None                            # Position of the player
     rating: Optional[float] = None            # Player rating
     minutes_played: Optional[int] = None      # Minutes played by the player
     goals: Optional[int] = None               # Goals scored by the player
@@ -283,8 +299,8 @@ class GeneralPlayerStats:
 
 @dataclass
 class GoalKeepingStats:
-    player_name: str                          # Name of the goalkeeper
-    position: str                             # Default position is goalkeeper
+    player_name: Optional[str] = None                         # Name of the goalkeeper
+    position: Optional[str]   = None                          # Default position is goalkeeper
     saves: Optional[int] = None               # Saves made by the goalkeeper
     goals_conceded: Optional[int] = None      # Goals conceded by the goalkeeper
     goals_prevented: Optional[float] = None   # Goals prevented by the goalkeeper
@@ -303,8 +319,8 @@ class GoalKeepingStats:
 
 @dataclass
 class DefensiveStats:
-    player_name: str                                        # Name of the player
-    position: str                                           # Position of the player
+    player_name: Optional[str] = None                                       # Name of the player
+    position: Optional[str] = None                                          # Position of the player
     total_duels: Optional[int] = None                       # Total duels attempted by the player
     aerial_duels_won: Optional[int] = None                  # Successful aerial duels by the player
     total_aerial_duels: Optional[int] = None                # Total aerial duels attempted by the player
@@ -331,8 +347,8 @@ class DefensiveStats:
 
 @dataclass
 class AttackingStats:
-    player_name: str                                        # Name of the player
-    position: str                                           # Position of the player
+    player_name: Optional[str] = None                                        # Name of the player
+    position: Optional[str] = None                                          # Position of the player
     touches_in_opposition: Optional[int] = None             # Touches in opposition box by the player
     successful_dribbles: Optional[int] = None               # Successful dribbles by the player
     total_dribbles: Optional[int] = None                    # Total dribbles attempted by the player
@@ -352,8 +368,8 @@ class AttackingStats:
 
 @dataclass
 class PassingStats:
-    player_name: str                                        # Name of the player
-    position: str                                           # Position of the player
+    player_name: Optional[str] = None                                       # Name of the player
+    position: Optional[str] = None                                          # Position of the player
     accurate_passes: Optional[int] = None                   # Accurate passes made by the player
     total_passes: Optional[int] = None                      # Total passes attempted by the player
     passes_accuracy: Optional[float] = None                 # Passes accuracy percentage by the player
@@ -380,8 +396,8 @@ class PassingStats:
 
 @dataclass
 class ShotsStats:
-    player_name: str                                        # Name of the player
-    position: str                                           # Position of the player
+    player_name: Optional[str] = None                                       # Name of the player
+    position: Optional[str] = None                                          # Position of the player
     total_shots: Optional[int] = None                       # Total shots attempted by the player
     goals: Optional[int] = None                             # Goals scored by the player
     xG: Optional[float] = None                              # Expected goals by the player
@@ -629,3 +645,10 @@ ODDS_DICT = {
     "over_under": TotalGoalsOdds,
     "1x2": MatchOutcomeOdds,
 }
+
+
+def has_none_values(instance) -> bool:
+    if not is_dataclass(instance):
+        raise TypeError("Provided instance is not a dataclass.")
+
+    return any(getattr(instance, field.name) is None for field in fields(instance))

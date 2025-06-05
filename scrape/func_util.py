@@ -23,10 +23,9 @@ def split_string(input_str: str) -> tuple:
 #         representing the home and away scores, returns None if the score is not valid
 
 def parse_score(score_text: str):
-    lines = score_text.strip().splitlines()
-
-    if len(lines) == 3:
-        home_raw, dash, away_raw = lines
+    scores = score_text.split("-")
+    if len(scores) == 2:
+        home_raw, away_raw = scores
         home_score = int(home_raw) if home_raw.isdigit() else None
         away_score = int(away_raw) if away_raw.isdigit() else None
 
@@ -81,7 +80,7 @@ def remove_ambigious_characters(text: str) -> str:
 # Split a string into three parts based on occurrence of '(', '%', and '/'
 # split_string: (str) -> tuple
 # interp. split_string takes a string and splits it into three parts based on occurrence of '('
-def split_string(string: str) -> tuple:
+def split_digit(string: str) -> tuple:
     match = re.match(r"(\d+)%\s*\(\s*(\d+)\s*/\s*(\d+)\s*\)", string)
     if match:
         percentage, first_value, second_value = match.groups()
@@ -109,7 +108,6 @@ def split_capital_string(string: str) -> tuple:
         first_part = "".join(parts[:-1])
         return first_part.strip(), last_part.strip()
     return string.strip(), ""
-
 
 # Seperate and remove merged (copy of original) text based on the merged text starting with capital letter
 # remove_duplicate_strings: (str) -> str

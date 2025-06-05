@@ -3,10 +3,10 @@
 from playwright.sync_api import Page
 from .data import PlayerStats, GeneralPlayerStats, ShotsStats, AttackingStats, PassingStats, DefensiveStats, GoalKeepingStats
 from .utils import scrape_locator_lists
-from .func_util import remove_duplicate_strings, split_capital_string, split_string
+from .func_util import remove_duplicate_strings, split_capital_string, split_digit
 
 SHOTS_MAP = {
-    "total": "total_shots",
+    "total shots": "total_shots",
     "goals": "goals",
     "expected goals (xg)": "xG",
     "xg on target": "xGOT",
@@ -15,7 +15,7 @@ SHOTS_MAP = {
     "blocked shots": "blocked_shots",
     "shots inside the box": "shots_inside_the_box",
     "shots outside the box": "shots_outside_the_box",
-    "headshots": "headshots"
+    "headed shots": "headed_shots"
 }
 
 ATTACK_MAP = {
@@ -74,49 +74,56 @@ GENERAL_MAP = {
 # helper function to scrape raw stats and return a list of dictionary
 #   containing different player stats
 async def scrape_stats_to_list(page: Page, map_type: dict, data_class) -> list:
-    stats_headers = []
-    table_heads_locator = await scrape_locator_lists(page=page, selector="thead .wcl-tableHeadCell_sux-6")
+    try:
+        stats_headers = []
+        table_heads_locator = await scrape_locator_lists(page=page, selector="thead .wcl-tableHeadCell_sux-6")
 
-    for head_locator in table_heads_locator:
-        header = head_locator.text_content()
-        header = remove_duplicate_strings(string=header)
-        stats_headers.append(header.lower())
+        for head_locator in table_heads_locator:
+            header = await head_locator.text_content()
+            header = remove_duplicate_strings(string=header)
+            stats_headers.append(header.lower())
 
-    all_stats = []
-    table_rows_locator = await scrape_locator_lists(page=page, selector="tbody tr")
-    
-    for row_locator in table_rows_locator:
-        cells_locator = await row_locator.locator("td").all()
-        row_stats = data_class()
-        for index, cell_locator in enumerate(cells_locator):
-            cell_text = await cell_locator.text_content()
-            if index == 0:
-                name, position = split_capital_string(string=cell_text)
-                setattr(row_stats, "player_name", name.strip())
-                setattr(row_stats, "position", position.strip())
+        all_stats = []
+        table_rows_locator = await scrape_locator_lists(page=page, selector="tbody tr")
+        
+        for row_locator in table_rows_locator:
+            cells_locator = await row_locator.locator("td").all()
 
-            else:
-                keys = map_type.get(stats_headers[index], None)
-                if keys is None:
-                    continue
-                if isinstance(keys, list) and len(keys) == 3:
-                    percentage_value, first_value, second_value = split_string(cell_text.strip())
-                    setattr(row_stats, keys[0], first_value)
-                    setattr(row_stats, keys[1], second_value)
-                    setattr(row_stats, keys[2], percentage_value)
+            row_stats = data_class()
+            for index, cell_locator in enumerate(cells_locator):
+                cell_text = await cell_locator.text_content()
+                if index == 0:
+                    name, position = split_capital_string(string=cell_text)
+                    setattr(row_stats, "player_name", name.strip())
+                    setattr(row_stats, "position", position.strip())
 
-                elif isinstance(keys, str):
-                    setattr(row_stats, keys, cell_text.strip())
-    
-        all_stats.append(row_stats)
-    return all_stats
+                else:
+                    keys = map_type.get(stats_headers[index], None)
+                    if keys is None:
+                        continue
+        
+                    if isinstance(keys, list) and len(keys) == 3:
+                        print(cell_text.strip())
+                        percentage_value, first_value, second_value = split_digit(cell_text.strip())
+                        setattr(row_stats, keys[0], int(first_value))
+                        setattr(row_stats, keys[1], int(second_value))
+                        setattr(row_stats, keys[2], int(percentage_value))
+
+                    elif isinstance(keys, str):
+                        print(keys, stats_headers[index], cell_text.strip())
+                        setattr(row_stats, keys, cell_text.strip())
+        
+            all_stats.append(row_stats)
+        return all_stats
+    except Exception as e:
+        print(e)
 
 
 # Page, str -> Dataclass Object
 # Scrapes player stats from the given page and returns any of the provide stats object
 async def navigate_and_scrape_stats(page: Page, url: str, map_type: dict, data_class):
     try:
-        url = page.url.rsplit('/', 1)[0] + url
+        url = await page.url.rsplit('/', 1)[0] + url
         await page.goto(url)
         await page.wait_for_selector(".container__livetable .container__detailInner .section .wcl-tableWrapper_Z9oKt .wcl-table_tQq-F")
 
