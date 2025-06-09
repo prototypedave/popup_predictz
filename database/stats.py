@@ -106,5 +106,6 @@ async def add_stats(session: AsyncSession, stats: MatchStats, game_id: int):
 
     new_stats = Stats(**filtered_stats)
     session.add(new_stats)
-    await session.commit()
+    await session.flush()
+    #await session.commit()
     print("Stats saved for game ID:", game_id)

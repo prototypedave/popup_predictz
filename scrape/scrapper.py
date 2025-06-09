@@ -11,7 +11,7 @@ from .player_stats import get_player_stats
 from .match_odds import get_match_odds
 import time, re
 from database.model import setup_database, ASYNC_DATABASE_URL
-from database.game import add_game
+from database.game import add_game, is_game_already_saved
 from database.stats import add_stats
 from database.team import add_team, get_team_by_name
 from .data import has_none_values
@@ -27,7 +27,7 @@ import asyncio
 
 
 class Scraper:
-    def __init__(self, browser, concurrency=10):
+    def __init__(self, browser, concurrency=2):
         self.browser = browser
         self.semaphore = asyncio.Semaphore(concurrency)
         self.engine = create_async_engine(ASYNC_DATABASE_URL, echo=True)
@@ -65,7 +65,7 @@ class Scraper:
 
                         saved_to_db = await self.scrape_match(page)
                         if not saved_to_db:
-                            break
+                            continue
 
                         await page.go_back()
                         await page.wait_for_selector(".h2h__row")
@@ -80,58 +80,66 @@ class Scraper:
 
     async def scrape_match(self, page):
         try:
-            await page.wait_for_selector(".duelParticipant")
-            country, league, round = await game_country_and_league(page)
-            home, away, home_score, away_score, start_time = await match_info(page)
-            # To be used later
-            additional_info = await scrape_additional_match_info(page)
-            home_team_info = {
-                "name": home,
-                "country": country,
-            }
-
-            away_team_info = {
-                "name": away,
-                "country": country
-            }
-
-            if not additional_info:
-                return False
-            
-            venue = additional_info.get('venue')
-            referee = additional_info.get('referee')
-            capacity = additional_info.get('capacity')
-            if not venue and not referee and not capacity:
-                return False
-            
-            if capacity:
-                capacity = re.sub(r'\s', '', capacity)
-
             async with self.AsyncSessionLocal() as session:
+                await page.wait_for_selector(".duelParticipant")
+                country, league, round = await game_country_and_league(page)
+                home, away, home_score, away_score, start_time = await match_info(page)
+
                 home_team = await get_team_by_name(session, home, country)
-                if home_team is None: 
-                    home_team = await add_team(session, home_team_info)
-                
                 away_team = await get_team_by_name(session, away, country)
-                if away_team is None:
-                    away_team = await add_team(session, away_team_info)
+                
+                if home_team and away_team:
+                    game_present = await is_game_already_saved(session, home_team.id, away_team.id)
+                    if game_present:
+                        return False
+                    
+                else:
+                    home_team_info = {
+                        "name": home,
+                        "country": country,
+                    }
+
+                    away_team_info = {
+                        "name": away,
+                        "country": country
+                    }
+                    if not home_team:
+                        home_team = await add_team(session, home_team_info)
+                    if not away_team:
+                        away_team = await add_team(session, away_team_info)
+
+
+                # To be used later
+                additional_info = await scrape_additional_match_info(page)
+
+                if not additional_info:
+                    return False
+                
+                venue = additional_info.get('venue')
+                referee = additional_info.get('referee')
+                capacity = additional_info.get('capacity')
+                if not venue and not referee and not capacity:
+                    return False
+                
+                if capacity:
+                    capacity = re.sub(r'\s', '', capacity)
 
                 stats_url = assemble_url(page.url, "/match-summary", STATS_FULL_TIME)
                 try:
                     await page.goto(stats_url)
                     await page.wait_for_selector(".container__livetable .container__detailInner .section")
-                    
+                        
                     stats = await get_match_stats(page)
                     if not stats or has_none_values(stats):
                         await page.go_back()
                         await page.wait_for_selector(".duelParticipant")
                         await session.rollback()
                         return False
-                    
+                        
                     game = {"start_time":start_time, "league":league, "home_team":home_team, 
                         "away_team":away_team, "home_score":home_score, "away_score":away_score, 
                         "round":round, "capacity":int(capacity), "referee":referee, "venue":venue, "country":country}
-                                            
+                                                
                     db_game = await add_game(session, game)
                     await add_stats(session, stats, game_id=db_game.id)
                     await session.commit()
@@ -156,17 +164,12 @@ class Scraper:
         async with self.AsyncSessionLocal() as session:
             df = await get_all_game_stats_df(session)
             print(df.head())
+            df.to_csv("todays_stats.csv", index=False)
 
 
     async def scrape_flashscore(self, url):
         page = await self.browser.new_page()
         await page.goto(url)
-        await page.wait_for_selector(".container__liveTableWrapper")
-        await page.click(".calendar__navigation--yesterday")
-        await page.wait_for_selector(".container__liveTableWrapper")
-        await page.click(".calendar__navigation--yesterday")
-        await page.wait_for_selector(".container__liveTableWrapper")
-        await page.click(".calendar__navigation--yesterday")
         await page.wait_for_selector(".container__liveTableWrapper")
         await page.click(".calendar__navigation--yesterday")
         await page.wait_for_selector(".event__match")
@@ -188,12 +191,31 @@ class Scraper:
         # Flatten the list of lists
         #return [link for sublist in all_h2h_links for link in sublist]
 
+    async def scrape_flashscore_today(self, url):
+        async def process_event_with_semaphore(event):
+            async with self.semaphore:  
+                href = await scrape_attributes(event, "a", "href")
+                if href:
+                    new_page = await self.browser.new_page()
+                    await new_page.goto(href)
+                    await new_page.wait_for_selector(".duelParticipant")
+                    await self.process_event(new_page)
+                    await new_page.close()
+
+        page = await self.browser.new_page()
+        await page.goto(url)
+        await page.wait_for_selector(".event__match")
+        events = await page.locator(".event__match").all()
+
+        # Create tasks for processing events with controlled concurrency
+        tasks = [process_event_with_semaphore(event) for event in events]
+        await asyncio.gather(*tasks)
+
+        await page.close()
+
     async def scrape_multiple(self, urls):
-        all_results = []
         for url in urls:
-            result = await self.scrape_flashscore(url)
-            all_results.extend(result)
-        return all_results
+            await self.scrape_flashscore(url)
 
     
 
@@ -201,7 +223,7 @@ async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         scraper = Scraper(browser)
-        
+        await scraper.start_db()
         urls = ["https://www.flashscore.com/"]
         await scraper.scrape_multiple(urls)
         #await scraper.get_starts_df()

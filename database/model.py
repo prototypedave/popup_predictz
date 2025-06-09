@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from .base import Base, ADMIN_URL, DB_NAME, ASYNC_DATABASE_URL
 from .game import FootballGame
 from .stats import Stats
+from .team import FootballTeam
 
 
 # Step 1: Ensure database exists
